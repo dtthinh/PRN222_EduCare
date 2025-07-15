@@ -33,6 +33,8 @@ namespace PRN222.Pages.Credential
                 ErrorMessage = "An account with this email already exists.";
                 return Page();
             }
+            account.RoleID = 3; // Assuming 3 is the RoleID for Parent
+
             await _accountService.SignUpAsync(account);
 
             // Optionally, log user in after registration:
