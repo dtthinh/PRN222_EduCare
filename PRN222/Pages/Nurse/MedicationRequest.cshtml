@@ -1,0 +1,61 @@
+﻿@page
+@model PRN222.Pages.Nurse.MedicationRequestModel
+@{
+    ViewData["Title"] = "Medication Requests";
+}
+
+<h2>Medication Requests</h2>
+
+@if (Model.Medications != null && Model.Medications.Count > 0)
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-primary">
+            <tr>
+                <th>Request ID</th>
+                <th>Date Created</th>
+                <th>Status</th>
+                <th>Parent Name</th>
+                <th>Student Name</th>
+                <th>Parent Note</th>
+                <th>Nurse Note</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var req in Model.Medications)
+            {
+                <tr class="@(req.Status == "Pending" ? "table-warning" : "")">
+                    <td>@req.RequestId</td>
+                    <td>@req.DateCreated.ToString("yyyy-MM-dd")</td>
+                    <td><strong>@req.Status</strong></td>
+                    <td>@req.Parent?.Fullname</td>
+                    <td>@req.Student?.Fullname</td>
+                    <td>@req.ParentNote</td>
+                    <td>@req.NurseNote</td>
+                    <td>
+                        @if (req.Status == "Pending")
+                        {
+                            <div class="mb-2">
+                                <form method="post" asp-page-handler="Approve" asp-route-id="@req.RequestId" class="d-flex flex-column gap-1">
+                                    <input type="text" name="nurseNote" class="form-control form-control-sm" placeholder="Add nurse note..." />
+                                    <button type="submit" class="btn btn-success btn-sm w-100">✔ Approve</button>
+                                </form>
+                            </div>
+                            <form method="post" asp-page-handler="Reject" asp-route-id="@req.RequestId">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">✖ Reject</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No actions</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No medication requests found.</p>
+}

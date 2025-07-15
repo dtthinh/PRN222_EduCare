@@ -32,7 +32,21 @@ namespace PRN222.Pages.Credential
             {
                 HttpContext.Session.SetInt32("UserId", logedAccount.AccountID);
 
-                return RedirectToPage("/Index");
+                if (logedAccount.RoleID == 1)
+                {
+                    HttpContext.Session.SetString("Role", "Admin");
+                    return RedirectToPage("/Index");    // Redirect to Admin Home Page
+                }
+                else if (logedAccount.RoleID == 2)
+                {
+                    HttpContext.Session.SetString("Role", "Nurse");
+                    return RedirectToPage("/Nurse/NurseHomePage");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("Role", "Parent");
+                    return RedirectToPage("/Index");   // Redirect to Parent Home Page
+                }
             }
 
             ErrorMessage = "Invalid username or password.";
