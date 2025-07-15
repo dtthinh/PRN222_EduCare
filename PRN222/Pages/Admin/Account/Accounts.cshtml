@@ -1,0 +1,36 @@
+﻿@page
+@model AccountsModel
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+}
+
+<h2>Danh sách tài khoản</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var acc in Model.Accounts)
+        {
+            <tr>
+                <td>@acc.Fullname</td>
+                <td>@acc.Email</td>
+                <td>@acc.Role?.RoleName</td>
+                <td>@acc.Status</td>
+                <td>
+                    <a asp-page="EditAccount" asp-route-id="@acc.AccountID">Sửa</a> |
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@acc.AccountID" style="display:inline">
+                        <button class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

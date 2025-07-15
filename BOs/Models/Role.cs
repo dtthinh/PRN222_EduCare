@@ -11,7 +11,7 @@ namespace BOs.Models
         public int RoleID { get; set; }
         public string RoleName { get; set; }
 
-        public ICollection<Account> Accounts { get; set; }
+        public ICollection<Account?> Accounts { get; set; }
     }
 
 }

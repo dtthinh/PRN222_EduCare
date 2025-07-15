@@ -1,0 +1,42 @@
+﻿@page
+@model DashboardModel
+@{
+    ViewData["Title"] = "Bảng điều khiển";
+}
+
+<h2>Bảng điều khiển</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Tổng học sinh</h5>
+                <p class="card-text">@Model.StudentCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Tổng phụ huynh</h5>
+                <p class="card-text">@Model.ParentCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Tổng y tá</h5>
+                <p class="card-text">@Model.NurseCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Tổng sự kiện y tế</h5>
+                <p class="card-text">@Model.MedicalEventCount</p>
+            </div>
+        </div>
+    </div>
+</div>

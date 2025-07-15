@@ -35,7 +35,7 @@ namespace PRN222.Pages.Credential
                 if (logedAccount.RoleID == 1)
                 {
                     HttpContext.Session.SetString("Role", "Admin");
-                    return RedirectToPage("/Index");    // Redirect to Admin Home Page
+                    return RedirectToPage("/Admin/Dashboards/DashBoard");    // Redirect to Admin Home Page
                 }
                 else if (logedAccount.RoleID == 2)
                 {
