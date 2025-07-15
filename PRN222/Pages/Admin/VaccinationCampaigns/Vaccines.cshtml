@@ -1,0 +1,28 @@
+﻿@page
+@model VaccinesModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh sách Vaccine";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-success mb-3" asp-page="CreateVaccine">Thêm Vaccine</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên Vaccine</th>
+            <th>Mô tả</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var v in Model.Vaccines)
+        {
+            <tr>
+                <td>@v.Name</td>
+                <td>@v.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>

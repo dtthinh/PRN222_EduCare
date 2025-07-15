@@ -1,0 +1,32 @@
+﻿@page
+@model CampaignsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh sách chiến dịch tiêm chủng";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-primary mb-3" asp-page="CreateCampaign">Tạo chiến dịch mới</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên chiến dịch</th>
+            <th>Ngày</th>
+            <th>Vaccine</th>
+            <th>Mô tả</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Campaigns)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.Vaccine?.Name</td>
+                <td>@item.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>
