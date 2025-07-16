@@ -1,0 +1,49 @@
+﻿@page
+@model MedicalEventsModel
+@{
+    ViewData["Title"] = "Quản lý lịch tiêm / khám";
+}
+
+<h2>Lịch tiêm / khám</h2>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Loại</th>
+            <th>Ngày</th>
+            <th>Ghi chú</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MedicalEvents)
+        {
+            <tr>
+                <td>@item.Type</td>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>@item.Note</td>
+                <td>
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#details-@item.MedicalEventId">
+                        Xem chi tiết
+                    </button>
+                </td>
+            </tr>
+            <tr class="collapse" id="details-@item.MedicalEventId">
+                <td colspan="4">
+                    <div class="border rounded p-3">
+                        <strong>Học sinh:</strong><br />
+                        Họ tên: @item.Student.Fullname<br />
+                        Giới tính: @item.Student.Gender<br />
+                        Mã HS: @item.Student.StudentCode<br />
+                        Ngày sinh: @item.Student.DateOfBirth.ToShortDateString()<br /><br />
+
+                        <strong>Y tá phụ trách:</strong><br />
+                        Họ tên: @item.Nurse.Fullname<br />
+                        Email: @item.Nurse.Email<br />
+                        SĐT: @item.Nurse.PhoneNumber
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,21 @@
+﻿@page
+@model CreateVaccineModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Tạo Vaccine Mới";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Tên vaccine</label>
+        <input asp-for="Vaccine.Name" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Mô tả</label>
+        <textarea asp-for="Vaccine.Description" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo</button>
+    <a asp-page="Vaccines" class="btn btn-secondary">Quay lại</a>
+</form>

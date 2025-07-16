@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -287,6 +288,11 @@ namespace DAOs
             return await _context.Accounts
                 .Where(a => a.RoleID == 2 && a.Status == "Active")
                 .ToListAsync();
+        }
+
+        public async Task<List<Role>> GetAllRolesAsync()
+        {
+            return await _context.Roles.AsNoTracking().ToListAsync();
         }
     }
 }

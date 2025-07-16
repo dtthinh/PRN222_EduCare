@@ -78,7 +78,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 );
 Console.WriteLine("⛳ Connection string: " + builder.Configuration.GetConnectionString("DefaultConnection"));
 
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 
