@@ -1,0 +1,17 @@
+﻿@page "{id:int}"
+@model PRN222.Pages.Nurse.Health_Check.DeleteHealthCheckModel
+@{
+    ViewData["Title"] = "Delete Health Check";
+}
+
+<h1>Confirm Delete</h1>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete Health Check ID <strong>@Model.HealthCheck.HealthCheckID</strong>?
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="HealthCheck.HealthCheckID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-page="HealthCheck" class="btn btn-secondary">Cancel</a>
+</form>

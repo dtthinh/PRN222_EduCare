@@ -1,0 +1,44 @@
+﻿@page "{id:int}"
+@model PRN222.Pages.Nurse.Health_Check.EditHealthCheckModel
+@{
+    ViewData["Title"] = "Edit Health Check";
+}
+
+<h1>Edit Health Check</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Input.HealthCheckID" />
+
+    <div class="form-group">
+        <label asp-for="Input.Result"></label>
+        <input asp-for="Input.Result" class="form-control" />
+        <span asp-validation-for="Input.Result" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.Height"></label>
+        <input asp-for="Input.Height" type="number" class="form-control" step="0.1" />
+        <span asp-validation-for="Input.Height" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.Weight"></label>
+        <input asp-for="Input.Weight" type="number" class="form-control" step="0.1" />
+        <span asp-validation-for="Input.Weight" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.LeftEye"></label>
+        <input asp-for="Input.LeftEye" type="number" class="form-control" step="0.1" />
+        <span asp-validation-for="Input.LeftEye" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.RightEye"></label>
+        <input asp-for="Input.RightEye" type="number" class="form-control" step="0.1" />
+        <span asp-validation-for="Input.RightEye" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="HealthCheck" class="btn btn-secondary">Cancel</a>
+</form>
