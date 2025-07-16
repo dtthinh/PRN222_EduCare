@@ -1,0 +1,149 @@
+@page
+@model PRN222.Pages.Parent.HealthRecordModel
+@{
+    ViewData["Title"] = "Health Record";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<h2>Health Record</h2>
+
+<div>
+    <button id="addStudentBtn" class="btn btn-primary">Add Student</button>
+</div>
+
+<hr />
+
+<h4>Assigned Students</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Full Name</th>
+            <th>Gender</th>
+            <th>Class</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="studentList">
+    @foreach (var student in Model.AssignedStudents)
+    {
+        <tr>
+            <td>@student.StudentCode</td>
+            <td>@student.Fullname</td>
+            <td>@student.Gender</td>
+            <td>@student.Class?.ClassName</td>
+            <td>
+                @if (Model.HasHealthRecord(student.StudentId))
+                {
+                    var recordId = Model.GetHealthRecordIdForStudent(student.StudentId);
+                    <a class="btn btn-info btn-sm" href="/Parent/ViewHealthRecord?recordId=@recordId">View Health Record</a>
+                }
+                else
+                {
+                    <a class="btn btn-success btn-sm" href="/Parent/CreateHealthRecord?studentId=@student.StudentId">Create Health Record</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Add Student Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="addStudentModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Student by Code</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="step1">
+          <input type="text" id="studentCodeInput" class="form-control" placeholder="Enter Student Code" />
+          <button class="btn btn-info mt-2" onclick="checkStudentCode()">Check</button>
+          <div id="checkError" class="text-danger mt-2"></div>
+        </div>
+        <div id="step2" style="display:none;">
+          <div id="studentInfo"></div>
+          <div id="assignError" class="text-danger mt-2"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-primary" id="assignBtn" style="display:none;" onclick="assignStudent()">Add Student</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="antiforgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+<script>
+function openModal() {
+    document.getElementById('addStudentModal').style.display = 'block';
+    document.getElementById('step1').style.display = '';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('studentCodeInput').value = '';
+    document.getElementById('checkError').innerText = '';
+    document.getElementById('assignError').innerText = '';
+    document.getElementById('assignBtn').style.display = 'none';
+}
+function closeModal() {
+    document.getElementById('addStudentModal').style.display = 'none';
+}
+document.getElementById('addStudentBtn').onclick = openModal;
+
+let checkedStudentCode = null;
+function checkStudentCode() {
+    const code = document.getElementById('studentCodeInput').value;
+    fetch('?handler=CheckStudent&code=' + encodeURIComponent(code))
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Student data:', data.student);
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step2').style.display = '';
+                document.getElementById('studentInfo').innerHTML = `<b>Full Name:</b> ${data.student.fullname}<br/><b>Gender:</b> ${data.student.gender}<br/><b>Date of Birth:</b> ${data.student.dateOfBirth ? data.student.dateOfBirth.substring(0,10) : ''}<br/><b>Class:</b> ${data.student.className}<br/><b>Student Code:</b> ${data.student.studentCode}`;
+                document.getElementById('assignBtn').style.display = '';
+                checkedStudentCode = code;
+            } else {
+                document.getElementById('checkError').innerText = data.error;
+            }
+        });
+}
+function getAntiForgeryToken() {
+    return document.querySelector('#antiforgeryForm input[name=__RequestVerificationToken]').value;
+}
+function assignStudent() {
+    const token = getAntiForgeryToken();
+    fetch('?handler=AssignStudent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': token
+        },
+        body: JSON.stringify({ code: checkedStudentCode })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            document.getElementById('assignError').innerText = data.error;
+        }
+    });
+}
+</script>
+<style>
+.modal { display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.4); }
+.modal-dialog { margin: 10% auto; }
+</style>
+} 
