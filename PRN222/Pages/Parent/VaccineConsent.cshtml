@@ -1,0 +1,138 @@
+@page
+@model PRN222.Pages.Parent.VaccineConsentModel
+@{
+    ViewData["Title"] = "Vaccine Consent";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Vaccine Consent Management</h2>
+            
+            @if (Model.VaccinationConsents.Any())
+            {
+                <div class="row">
+                    @foreach (var consent in Model.VaccinationConsents)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">@consent.Campaign.Name</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>Student:</strong> @consent.Student.Fullname
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Class:</strong> @consent.Student.Class?.ClassName
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Vaccine:</strong> @consent.Campaign.Vaccine?.Name
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Campaign Date:</strong> @consent.Campaign.Date.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Description:</strong>
+                                        <p class="text-muted small">@(string.IsNullOrEmpty(consent.Campaign.Description) ? "No description available" : consent.Campaign.Description)</p>
+                                    </div>
+                                    
+                                    @if (consent.IsAgreed.HasValue)
+                                    {
+                                        <div class="mb-3">
+                                            <strong>Status:</strong>
+                                            @if (consent.IsAgreed.Value)
+                                            {
+                                                <span class="badge bg-success">Accepted</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Rejected</span>
+                                            }
+                                        </div>
+                                        @if (consent.DateConfirmed.HasValue)
+                                        {
+                                            <div class="mb-3">
+                                                <strong>Date Confirmed:</strong> @consent.DateConfirmed.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(consent.Note))
+                                        {
+                                            <div class="mb-3">
+                                                <strong>Note:</strong>
+                                                <p class="text-muted small">@consent.Note</p>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="mb-3">
+                                            <strong>Status:</strong>
+                                            <span class="badge bg-warning">Pending</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="card-footer">
+                                    @if (!consent.IsAgreed.HasValue)
+                                    {
+                                        <form method="post" class="d-inline">
+                                            <input type="hidden" name="consentId" value="@consent.ConsentId" />
+                                            <input type="hidden" name="action" value="accept" />
+                                            <button type="submit" class="btn btn-success btn-sm me-2" 
+                                                    onclick="return confirm('Are you sure you want to accept this vaccine consent?')">
+                                                <i class="fas fa-check"></i> Accept
+                                            </button>
+                                        </form>
+                                        <form method="post" class="d-inline">
+                                            <input type="hidden" name="consentId" value="@consent.ConsentId" />
+                                            <input type="hidden" name="action" value="reject" />
+                                            <button type="submit" class="btn btn-danger btn-sm" 
+                                                    onclick="return confirm('Are you sure you want to reject this vaccine consent?')">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">
+                                            @if (consent.IsAgreed.Value)
+                                            {
+                                                <i class="fas fa-check-circle text-success"></i> @("Consent has been accepted")
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-times-circle text-danger"></i> @("Consent has been rejected")
+                                            }
+                                        </small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    No vaccine consent requests found for your children.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                @Model.Message
+            </div>
+        </div>
+    </div>
+} 

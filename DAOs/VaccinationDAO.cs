@@ -104,7 +104,9 @@ namespace DAOs
             using var context = new DataContext();
             return await context.VaccinationConsents
                 .Include(c => c.Campaign)
+                    .ThenInclude(c => c.Vaccine)
                 .Include(c => c.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(c => c.ParentId == parentId)
                 .ToListAsync();
         }
