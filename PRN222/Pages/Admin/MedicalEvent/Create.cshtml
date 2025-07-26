@@ -1,0 +1,95 @@
+﻿@page
+@model CreateModel
+@{
+    ViewData["Title"] = "Tạo Sự Kiện Khám Sức Khỏe Theo Lớp";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>Trang này cho phép tạo một sự kiện khám sức khỏe chung cho tất cả học sinh trong một lớp đã chọn.</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label class="form-label fw-bold">Chọn lớp học</label>
+                <select asp-for="SelectedClassId" asp-items="Model.ClassOptions" class="form-select" required>
+                    <option value="">-- Vui lòng chọn một lớp --</option>
+                </select>
+                <span asp-validation-for="SelectedClassId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MedicalEvent.Type" class="form-label fw-bold">Loại sự kiện</label>
+                <input asp-for="MedicalEvent.Type" class="form-control" placeholder="Ví dụ: Khám định kỳ, Tiêm chủng..." />
+                <span asp-validation-for="MedicalEvent.Type" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label fw-bold">Y tá phụ trách</label>
+                <select asp-for="MedicalEvent.NurseId" asp-items="Model.NurseOptions" class="form-select" required>
+                    <option value="">-- Chọn y tá --</option>
+                </select>
+                <span asp-validation-for="MedicalEvent.NurseId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MedicalEvent.Date" class="form-label fw-bold">Ngày khám</label>
+                <input asp-for="MedicalEvent.Date" type="date" class="form-control" required />
+                <span asp-validation-for="MedicalEvent.Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MedicalEvent.Description" class="form-label fw-bold">Mô tả chi tiết</label>
+                <textarea asp-for="MedicalEvent.Description" class="form-control" rows="3" placeholder="Nhập mô tả chi tiết về sự kiện..."></textarea>
+                <span asp-validation-for="MedicalEvent.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MedicalEvent.Note" class="form-label fw-bold">Ghi chú chung</label>
+                <textarea asp-for="MedicalEvent.Note" class="form-control" rows="3" placeholder="Thêm các ghi chú khác nếu cần"></textarea>
+                <span asp-validation-for="MedicalEvent.Note" class="text-danger"></span>
+            </div>
+
+            <hr />
+
+            <h4><i class="fas fa-pills"></i> Thuốc đã sử dụng</h4>
+            <div id="medication-container"></div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addMedication()">
+                <i class="fas fa-plus"></i> Thêm thuốc
+            </button>
+
+            <hr />
+
+            <h4><i class="fas fa-band-aid"></i> Vật tư y tế đã sử dụng</h4>
+            <div id="supply-container"></div>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addSupply()">
+                <i class="fas fa-plus"></i> Thêm vật tư
+            </button>
+
+            <hr />
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save"></i> Tạo Sự Kiện
+                </button>
+                <a asp-page="./MedicalEvents" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let medicationIndex = 0; let supplyIndex = 0;
+        const allMedications = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AllMedications.Select(m => new { id = m.MedicationId, name = m.Name })));
+        const allSupplies = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AllSupplies.Select(s => new { id = s.MedicalSupplyId, name = s.Name })));
+        function getOptions(list) { let optionsHtml = ''; if (list) { list.forEach(item => { optionsHtml += `<option value="${item.id}">${item.name}</option>`; }); } return optionsHtml; }
+        function addMedication() { const container = document.getElementById('medication-container'); const html = `<div class="row g-2 mb-2 align-items-center" id="med-row-${medicationIndex}"><div class="col-sm-5"><select name="SelectedMedications[${medicationIndex}].MedicationId" class="form-select" required><option value="">-- Chọn thuốc --</option>${getOptions(allMedications)}</select></div><div class="col-sm-4"><input type="number" name="SelectedMedications[${medicationIndex}].QuantityUsed" class="form-control" placeholder="Số lượng" min="1" required /></div><div class="col-sm-auto"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow('med-row-${medicationIndex}')">Xóa</button></div></div>`; container.insertAdjacentHTML('beforeend', html); medicationIndex++; }
+        function addSupply() { const container = document.getElementById('supply-container'); const html = `<div class="row g-2 mb-2 align-items-center" id="supply-row-${supplyIndex}"><div class="col-sm-5"><select name="SelectedSupplies[${supplyIndex}].MedicalSupplyId" class="form-select" required><option value="">-- Chọn vật tư --</option>${getOptions(allSupplies)}</select></div><div class="col-sm-4"><input type="number" name="SelectedSupplies[${supplyIndex}].QuantityUsed" class="form-control" placeholder="Số lượng" min="1" required /></div><div class="col-sm-auto"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow('supply-row-${supplyIndex}')">Xóa</button></div></div>`; container.insertAdjacentHTML('beforeend', html); supplyIndex++; }
+        function removeRow(rowId) { const row = document.getElementById(rowId); if(row) { row.remove(); } }
+    </script>
+}

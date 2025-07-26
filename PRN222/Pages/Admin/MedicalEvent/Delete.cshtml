@@ -1,0 +1,27 @@
+﻿@page "/Admin/MedicalEvent/Delete/{id:int}"
+@model DeleteModel
+@{
+    ViewData["Title"] = "Xác nhận xóa";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3 class="text-danger">Bạn có chắc chắn muốn xóa sự kiện này không?</h3>
+<div>
+    <h4>Sự kiện Y tế</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Học sinh</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedicalEvent.Student.Fullname)</dd>
+        <dt class="col-sm-3">Loại sự kiện</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedicalEvent.Type)</dd>
+        <dt class="col-sm-3">Ngày diễn ra</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Date.ToString("dd/MM/yyyy")</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="MedicalEvent.MedicalEventId" />
+        <button type="submit" class="btn btn-danger">Xóa</button> |
+        <a asp-page="./MedicalEvents">Hủy và quay lại danh sách</a>
+    </form>
+</div>

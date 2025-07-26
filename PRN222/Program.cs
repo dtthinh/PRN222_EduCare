@@ -17,8 +17,6 @@ builder.Services.AddRazorPages();
 // Repositories
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
-builder.Services.AddScoped<IBlogRepo, BlogRepo>();
-builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 builder.Services.AddScoped<IHealthRecordRepo, HealthRecordRepo>();
 builder.Services.AddScoped<IHealthCheckRepo, HealthCheckRepo>();
 builder.Services.AddScoped<IClassRepo, ClassRepo>();
@@ -37,8 +35,6 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
-builder.Services.AddScoped<IBlogService, BlogService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
 builder.Services.AddScoped<IClassService, ClassService>();
