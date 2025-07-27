@@ -27,12 +27,6 @@ namespace Services
         Task<int> GetParentCountAsync();
         Task<int> GetNurseCountAsync();
 
-        // OTP (cache)
-        Task<bool> SaveOtpAsync(string email, string otp, DateTime expiration);
-        Task<bool> VerifyOtpAsync(string email, string otp);
-        Task InvalidateOtpAsync(string email);
-        Task<OtpInfo> GetCurrentOtpAsync(string email);
-
         Task<List<Account>> GetActiveNursesAsync();
     }
 

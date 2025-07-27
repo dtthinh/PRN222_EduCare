@@ -1,35 +1,43 @@
 ﻿@page
 @model CreateCampaignModel
 @{
-    Layout = "_AdminLayout";
-    ViewData["Title"] = "Tạo chiến dịch tiêm mới";
+    ViewData["Title"] = "Tạo chiến dịch tiêm chủng";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="mb-4">Tạo chiến dịch tiêm chủng</h2>
 
-<form method="post">
+<form method="post" class="needs-validation" novalidate>
     <div class="mb-3">
-        <label class="form-label">Tên chiến dịch</label>
-        <input asp-for="Campaign.Name" class="form-control" required />
+        <label asp-for="Campaign.Name" class="form-label">Tên chiến dịch</label>
+        <input asp-for="Campaign.Name" class="form-control" />
+        <span asp-validation-for="Campaign.Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Vaccine</label>
-        <select asp-for="Campaign.VaccineId" asp-items="Model.VaccineOptions" class="form-select" required>
-            <option value="">-- Chọn vaccine --</option>
+        <label asp-for="Campaign.VaccineId" class="form-label">Loại vắc xin</label>
+        <select asp-for="Campaign.VaccineId" asp-items="Model.VaccineOptions" class="form-select">
+            <option value="">-- Chọn loại vắc xin --</option>
         </select>
+        <span asp-validation-for="Campaign.VaccineId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Ngày tổ chức</label>
-        <input asp-for="Campaign.Date" class="form-control" type="date" required />
+        <label asp-for="Campaign.Date" class="form-label">Ngày tổ chức</label>
+        <input asp-for="Campaign.Date" type="date" class="form-control" />
+        <span asp-validation-for="Campaign.Date" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Mô tả</label>
+        <label asp-for="Campaign.Description" class="form-label">Mô tả (tuỳ chọn)</label>
         <textarea asp-for="Campaign.Description" class="form-control"></textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary">Tạo</button>
-    <a asp-page="Campaigns" class="btn btn-secondary">Quay lại</a>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Tạo</button>
+        <a asp-page="./Index" class="btn btn-secondary">Hủy</a>
+    </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
