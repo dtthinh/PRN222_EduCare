@@ -1,7 +1,9 @@
-using BOs.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using BOs.Models;
 using Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class AccountsModel : PageModel
 {
@@ -12,16 +14,10 @@ public class AccountsModel : PageModel
         _accountService = accountService;
     }
 
-    public List<Account> Accounts { get; set; }
+    public List<Account> Accounts { get; set; } = new List<Account>();
 
     public async Task OnGetAsync()
     {
-        Accounts = await _accountService.GetAllAccountsAsync();
-    }
-
-    public async Task<IActionResult> OnPostDeleteAsync(int id)
-    {
-        await _accountService.DeleteAccountAsync(id);
-        return RedirectToPage();
+        Accounts = await _accountService.GetAllAccountsAsync() ?? new List<Account>();
     }
 }

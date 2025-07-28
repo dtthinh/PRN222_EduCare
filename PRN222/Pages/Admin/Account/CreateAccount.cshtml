@@ -1,0 +1,100 @@
+﻿@page
+@model CreateAccountModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Tạo Tài Khoản Mới";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Điền thông tin dưới đây để tạo một người dùng mới trong hệ thống.</p>
+                    <hr />
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.Fullname" class="form-label fw-bold"></label>
+                                <input asp-for="Account.Fullname" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" />
+                                <span asp-validation-for="Account.Fullname" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.Email" class="form-label fw-bold"></label>
+                                <input asp-for="Account.Email" type="email" class="form-control" placeholder="vi.du@email.com" />
+                                <span asp-validation-for="Account.Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.Password" class="form-label fw-bold"></label>
+                                <input asp-for="Account.Password" type="password" class="form-control" />
+                                <span asp-validation-for="Account.Password" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.PhoneNumber" class="form-label fw-bold"></label>
+                                <input asp-for="Account.PhoneNumber" class="form-control" />
+                                <span asp-validation-for="Account.PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.DateOfBirth" class="form-label fw-bold"></label>
+                                <input asp-for="Account.DateOfBirth" type="date" class="form-control" />
+                                <span asp-validation-for="Account.DateOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Account.Address" class="form-label fw-bold"></label>
+                            <input asp-for="Account.Address" class="form-control" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" />
+                            <span asp-validation-for="Account.Address" class="text-danger"></span>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Account.RoleID" class="form-label fw-bold">Vai trò</label>
+                                <select asp-for="Account.RoleID" class="form-select" asp-items="Model.RoleOptions">
+                                    <option value="">-- Chọn vai trò --</option>
+                                </select>
+                                <span asp-validation-for="Account.RoleID" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Account.Image" class="form-label fw-bold">Ảnh đại diện</label>
+                            <input type="file" name="imageFile" class="form-control" />
+                            <span asp-validation-for="Account.Image" class="text-danger"></span>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-end">
+                            <a asp-page="Accounts" class="btn btn-secondary me-2">
+                                <i class="fas fa-times-circle"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle"></i> Tạo Tài Khoản
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

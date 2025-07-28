@@ -1,0 +1,91 @@
+﻿@page "{id:int}"
+@model DetailsAccountModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chi Tiết Tài Khoản";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">@ViewData["Title"]: @Model.Account.Fullname</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            @if (Model.Account.Image != null && Model.Account.Image.Length > 0)
+                            {
+                                var base64 = Convert.ToBase64String(Model.Account.Image);
+                                var imgSrc = $"data:image/jpeg;base64,{base64}";
+                                <img src="@imgSrc" class="img-fluid rounded-circle shadow" alt="Ảnh đại diện" style="width: 150px; height: 150px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-avatar.png" class="img-fluid rounded-circle shadow" alt="Ảnh đại diện mặc định" style="width: 150px; height: 150px; object-fit: cover;" />
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <dl class="row">
+                                <dt class="col-sm-4">Họ và tên</dt>
+                                <dd class="col-sm-8">@Model.Account.Fullname</dd>
+
+                                <dt class="col-sm-4">Email</dt>
+                                <dd class="col-sm-8">@Model.Account.Email</dd>
+
+                                <dt class="col-sm-4">Vai trò</dt>
+                                <dd class="col-sm-8">@Model.Account.Role?.RoleName</dd>
+
+                                <dt class="col-sm-4">Trạng thái</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Account.Status == "Active")
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Không hoạt động</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h4>Thông tin cá nhân</h4>
+                    <dl class="row mt-3">
+                        <dt class="col-sm-3">Số điện thoại</dt>
+                        <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Account.PhoneNumber) ? "Chưa cập nhật" : Model.Account.PhoneNumber)</dd>
+
+                        <dt class="col-sm-3">Ngày sinh</dt>
+                        <dd class="col-sm-9">@Model.Account.DateOfBirth.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-3">Địa chỉ</dt>
+                        <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Account.Address) ? "Chưa cập nhật" : Model.Account.Address)</dd>
+                    </dl>
+
+                    <hr />
+
+                    <h4>Thông tin hệ thống</h4>
+                    <dl class="row mt-3">
+                        <dt class="col-sm-3">Ngày tạo</dt>
+                        <dd class="col-sm-9">@Model.Account.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-3">Cập nhật lần cuối</dt>
+                        <dd class="col-sm-9">@Model.Account.UpdateAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-light text-end">
+                    <a asp-page="EditAccount" asp-route-id="@Model.Account.AccountID" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Sửa
+                    </a>
+                    <a asp-page="Accounts" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -40,11 +40,10 @@ namespace BOs.Data
         public DbSet<HealthCheck> HealthChecks { get; set; }
         public DbSet<MedicalEventMedication> MedicalEventMedications { get; set; }
         public DbSet<MedicalEventMedicalSupply> MedicalEventMedicalSupplies { get; set; }
-        public DbSet<HealthConsultationBooking> HealthConsultationBookings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString());
-        private string GetConnectionString()
+        private static string GetConnectionString()
         {
             IConfiguration configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -537,32 +536,6 @@ namespace BOs.Data
                 entity.HasOne(e => e.MedicalSupply)
                       .WithMany(s => s.MedicalEventMedicalSupplies)
                       .HasForeignKey(e => e.MedicalSupplyId);
-            });
-            #endregion
-
-            #region HealthConsultationBooking
-            modelBuilder.Entity<HealthConsultationBooking>(entity =>
-            {
-                entity.ToTable("HealthConsultationBooking");
-                entity.HasKey(b => b.BookingId);
-
-                entity.Property(b => b.Reason).HasMaxLength(1000).IsUnicode(true);
-                entity.Property(b => b.Status).HasMaxLength(50).IsUnicode(true);
-
-                entity.HasOne(b => b.Student)
-                      .WithMany()
-                      .HasForeignKey(b => b.StudentId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(b => b.Nurse)
-                      .WithMany()
-                      .HasForeignKey(b => b.NurseId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(b => b.Parent)
-                      .WithMany()
-                      .HasForeignKey(b => b.ParentId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
 

@@ -1,7 +1,7 @@
 ﻿@page
 @model MedicalEventsModel
 @{
-    ViewData["Title"] = "Quản lý Sự kiện Y tế";
+    ViewData["Title"] = "Quản lý lịch sử khám bệnh";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -29,7 +29,7 @@ else
                     <thead class="thead-light">
                         <tr>
                             <th>Học sinh</th>
-                            <th>Loại sự kiện</th>
+                            <th>Loại</th>
                             <th>Ngày diễn ra</th>
                             <th>Y tá phụ trách</th>
                             <th style="width: 200px;">Hành động</th>
@@ -44,7 +44,6 @@ else
                                 <td>@item.Date.ToString("dd/MM/yyyy")</td>
                                 <td>@item.Nurse?.Fullname</td>
                                 <td>
-                                    <a asp-page="./Edit" asp-route-id="@item.MedicalEventId" class="btn btn-sm btn-primary">Sửa</a>
                                     <a asp-page="./Details" asp-route-id="@item.MedicalEventId" class="btn btn-sm btn-info">Chi tiết</a>
                                     <a asp-page="./Delete" asp-route-id="@item.MedicalEventId" class="btn btn-sm btn-danger">Xóa</a>
                                 </td>

@@ -13,6 +13,8 @@ namespace Services
         Task<Account?> GetAccountByEmailAsync(string email);
         Task<Account?> GetAccountByIdAsync(int accountId);
         Task<Account?> Login(string email, string password);
+
+        Task<List<Role>> GetAllRolesAsync();
         Task<List<Account>> GetAllAccountsAsync();
         Task<List<Account>> SearchAccountsByFullNameAsync(string searchTerm);
         Task<Account?> SearchAccountByIdAsync(int accountId);

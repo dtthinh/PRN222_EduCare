@@ -16,6 +16,10 @@ namespace Repos
             return await AccountDAO.Instance.GetAccountByEmailAsync(email);
         }
 
+        public async Task<List<Role>> GetAllRolesAsync()
+        {
+            return await AccountDAO.Instance.GetAllRolesAsync();
+        }
         public async Task<Role?> GetRoleByIdAsync(int roleId)
         {
             return await AccountDAO.Instance.GetRoleByIdAsync(roleId);

@@ -1,38 +1,62 @@
-using BOs.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Repos;
+using Microsoft.AspNetCore.Http;
 using Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Text.Json;
+using DAOs;
+using System.Linq;
+using BOs.Models;
 
 public class DashboardModel : PageModel
 {
-    private readonly IAccountService _accountService;
-    private readonly IMedicalEventService _medicalEventService;
-    private readonly IStudentRepo _studentRepo;
+    private readonly IDashboardService _dashboardService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public DashboardModel(
-        IAccountService accountService,
-        IMedicalEventService medicalEventService,
-        IStudentRepo studentRepo)
+    public DashboardModel(IDashboardService dashboardService, IHttpContextAccessor httpContextAccessor)
     {
-        _accountService = accountService;
-        _medicalEventService = medicalEventService;
-        _studentRepo = studentRepo;
+        _dashboardService = dashboardService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public int StudentCount { get; set; }
-    public int ParentCount { get; set; }
-    public int NurseCount { get; set; }
-    public int MedicalEventCount { get; set; }
+    public Dictionary<string, int> OverviewData { get; set; } = new Dictionary<string, int>();
+    public List<RecentActivityData> RecentActivities { get; set; } = new List<RecentActivityData>();
+    public (Dictionary<string, int> byGender, Dictionary<string, int> byAge, List<(string className, int count)> byClass) StudentDistribution { get; set; }
+    public (List<(string Name, int Used, int Remaining)> MostUsedSupplies, List<(string Name, int Current, int Minimum)> LowStockAlerts, List<(string Name, string ExpiryDate, int Quantity)> ExpiringItems) SupplyUsage { get; set; }
+    public (double OverallCoverage, List<(string CampaignName, int TargetCount, int CompletedCount, double CoverageRate, double ConsentRate)> ByCampaign, List<(string ClassName, double Coverage)> ByClass) VaccinationCoverage { get; set; }
 
-    public async Task OnGetAsync()
+    public string Period { get; set; }
+    public string StudentGenderChartDataJson { get; set; }
+    public string StudentAgeChartDataJson { get; set; }
+    public string MedicalEventsTimelineJson { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(string period = "30d")
     {
-        var students = await _studentRepo.GetAllStudentsAsync();
-        StudentCount = students.Count;
+        Period = period;
+        var accountId = _httpContextAccessor.HttpContext.Session.GetInt32("UserId");
 
-        ParentCount = await _accountService.GetParentCountAsync();
-        NurseCount = await _accountService.GetNurseCountAsync();
+        if (accountId == null)
+        {
+            return RedirectToPage("/Credential/Login");
+        }
 
-        var events = await _medicalEventService.GetAllMedicalEventsAsync();
-        MedicalEventCount = events.Count;
+        OverviewData = await _dashboardService.GetOverviewAsync(accountId.Value);
+        RecentActivities = await _dashboardService.GetRecentActivitiesAsync(accountId.Value, 1, 5, null);
+        StudentDistribution = await _dashboardService.GetStudentDistributionAsync(accountId.Value);
+
+        StudentGenderChartDataJson = JsonSerializer.Serialize(new
+        {
+            labels = StudentDistribution.byGender.Keys.ToList(),
+            datasets = new[] { new { data = StudentDistribution.byGender.Values.ToList() } }
+        });
+
+        StudentAgeChartDataJson = JsonSerializer.Serialize(new
+        {
+            labels = StudentDistribution.byAge.Keys.ToList(),
+            datasets = new[] { new { data = StudentDistribution.byAge.Values.ToList() } }
+        });
+
+        return Page();
     }
 }

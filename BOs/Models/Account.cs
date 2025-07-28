@@ -1,36 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BOs.Models
 {
     public class Account
     {
         public int AccountID { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng chọn vai trò.")]
         public int RoleID { get; set; }
+
+        [Required(ErrorMessage = "Email là bắt buộc.")]
+        [EmailAddress(ErrorMessage = "Định dạng email không hợp lệ.")]
         public string Email { get; set; }
+
         public string Password { get; set; }
 
-        [Display(Name = "Full Name")]
+        [Display(Name = "Họ và tên")]
+        [Required(ErrorMessage = "Họ và tên là bắt buộc.")]
+        [StringLength(100)]
         public string Fullname { get; set; }
-        public string Address { get; set; }
-        public byte[]? Image { get; set; } // Thêm dòng này để lưu ảnh đại diện (avatar)
 
-        [Display(Name = "Date of Birth")]
+        public string Address { get; set; }
+
+        public byte[]? Image { get; set; }
+
+        [Display(Name = "Ngày sinh")]
         public DateTime DateOfBirth { get; set; }
 
-        [Display(Name = "Phone Number")]
+        [Display(Name = "Số điện thoại")]
         public string PhoneNumber { get; set; }
+
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdateAt { get; set; }
+
+        [Required(ErrorMessage = "Trạng thái là bắt buộc.")]
         public string Status { get; set; }
 
-        public Role Role { get; set; }
-        public ICollection<Student> Students { get; set; }
-        public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
+        public virtual Role Role { get; set; }
+        public virtual ICollection<Student> Students { get; set; }
+        public virtual ICollection<PasswordResetToken> PasswordResetTokens { get; set; }
     }
-
 }

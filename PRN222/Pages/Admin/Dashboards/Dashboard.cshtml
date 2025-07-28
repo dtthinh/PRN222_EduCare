@@ -1,42 +1,125 @@
 ﻿@page
 @model DashboardModel
 @{
+    Layout = "_AdminLayout";
     ViewData["Title"] = "Bảng điều khiển";
 }
 
-<h2>Bảng điều khiển</h2>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">@ViewData["Title"]</h1>
+        <div class="btn-group">
+            <select id="periodFilter" class="form-select">
+                <option value="7d" selected="@(Model.Period == "7d")">7 ngày qua</option>
+                <option value="30d" selected="@(Model.Period == "30d")">30 ngày qua</option>
+                <option value="90d" selected="@(Model.Period == "90d")">90 ngày qua</option>
+                <option value="1y" selected="@(Model.Period == "1y")">1 năm qua</option>
+            </select>
+        </div>
+    </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Tổng học sinh</h5>
-                <p class="card-text">@Model.StudentCount</p>
+    <div class="row">
+        @foreach (var item in Model.OverviewData)
+        {
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">@item.Key</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@item.Value.ToString("N0")</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Dòng thời gian sự kiện y tế</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="medicalEventsTimelineChart"></canvas>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Tổng phụ huynh</h5>
-                <p class="card-text">@Model.ParentCount</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Tổng y tá</h5>
-                <p class="card-text">@Model.NurseCount</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-warning text-white mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Tổng sự kiện y tế</h5>
-                <p class="card-text">@Model.MedicalEventCount</p>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Hoạt động gần đây</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentActivities == null || !Model.RecentActivities.Any())
+                    {
+                        <div class="text-center text-muted py-3">
+                            <p>Không có hoạt động nào gần đây.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <li class="list-group-item d-flex align-items-start">
+                                    <i class="fas fa-history text-primary me-3 mt-1"></i>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold">@activity.Description</div>
+                                        <small class="text-muted">@activity.Timestamp.ToString() - @activity.Type</small>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const periodFilter = document.getElementById('periodFilter');
+            periodFilter.addEventListener('change', function() {
+                const selectedPeriod = this.value;
+                window.location.href = `?period=${selectedPeriod}`;
+            });
+
+            const genderChartCtx = document.getElementById('studentGenderChart').getContext('2d');
+            const genderChartData = JSON.parse('@Html.Raw(Model.StudentGenderChartDataJson)');
+            new Chart(genderChartCtx, {
+                type: 'doughnut',
+                data: genderChartData,
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ageChartCtx = document.getElementById('studentAgeChart').getContext('2d');
+            const ageChartData = JSON.parse('@Html.Raw(Model.StudentAgeChartDataJson)');
+            new Chart(ageChartCtx, {
+                type: 'pie',
+                data: ageChartData,
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const eventsCtx = document.getElementById('medicalEventsTimelineChart').getContext('2d');
+            const eventsData = JSON.parse('@Html.Raw(Model.MedicalEventsTimelineJson)');
+            new Chart(eventsCtx, {
+                type: 'bar',
+                data: eventsData,
+                options: {
+                    plugins: { title: { display: true, text: 'Phân loại sự kiện' } },
+                    responsive: true,
+                    scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+                }
+            });
+        });
+    </script>
+}
