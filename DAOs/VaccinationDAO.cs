@@ -89,6 +89,19 @@ namespace DAOs
         }
 
         // VaccinationConsent
+
+        public async Task<List<VaccinationConsent>> GetAllConsentsAsync()
+        {
+            using var context = new DataContext();
+            return await context.VaccinationConsents
+                .Include(c => c.Campaign)
+                    .ThenInclude(camp => camp.Vaccine)
+                .Include(c => c.Student)
+                    .ThenInclude(s => s.Class)
+                .Include(c => c.Parent)
+                .ToListAsync();
+        }
+
         public async Task<List<VaccinationConsent>> GetConsentsByCampaignAsync(int campaignId)
         {
             using var context = new DataContext();

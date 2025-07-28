@@ -20,6 +20,7 @@ namespace Repos
         public Task<bool> CampaignTimeConflictAsync(DateTime date) => VaccinationDAO.Instance.CampaignTimeConflictAsync(date);
 
         // Consent
+        public Task<List<VaccinationConsent>> GetAllConsentsAsync() => VaccinationDAO.Instance.GetAllConsentsAsync();
         public Task<List<VaccinationConsent>> GetConsentsByCampaignAsync(int campaignId) => VaccinationDAO.Instance.GetConsentsByCampaignAsync(campaignId);
         public Task<List<VaccinationConsent>> GetConsentsByParentIdAsync(int parentId) => VaccinationDAO.Instance.GetConsentsByParentIdAsync(parentId);
         public Task<VaccinationConsent?> GetConsentAsync(int campaignId, int studentId, int parentId) => VaccinationDAO.Instance.GetConsentAsync(campaignId, studentId, parentId);

@@ -1,0 +1,68 @@
+﻿@page
+@model PRN222.Pages.Nurse.Consent.ViewConsentModel
+@{
+    ViewData["Title"] = "All Vaccination Consents";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">All Vaccination Consents</h2>
+    @if (Model.VaccinationConsents != null && Model.VaccinationConsents.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Campaign</th>
+                    <th>Student</th>
+                    <th>Class</th>
+                    <th>Vaccine</th>
+                    <th>Campaign Date</th>
+                    <th>Status</th>
+                    <th>Date Confirmed</th>
+                    <th>Note</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var consent in Model.VaccinationConsents)
+                {
+                    <tr>
+                        <td>@consent.Campaign?.Name</td>
+                        <td>@consent.Student?.Fullname</td>
+                        <td>@consent.Student?.Class?.ClassName</td>
+                        <td>@consent.Campaign?.Vaccine?.Name</td>
+                        <td>@consent.Campaign?.Date.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (consent.IsAgreed.HasValue)
+                            {
+                                if (consent.IsAgreed.Value)
+                                {
+                                    <span class="badge bg-success">Accepted</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Rejected</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                        </td>
+                        <td>@(consent.DateConfirmed.HasValue ? consent.DateConfirmed.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                        <td>@(string.IsNullOrEmpty(consent.Note) ? "-" : consent.Note)</td>
+                        <td>
+                            @if (consent.IsAgreed.HasValue && consent.IsAgreed.Value)
+                            {
+                                <a class="btn btn-primary btn-sm" href="/Nurse/Vaccination/CreateVaccinationRecord?campaignId=@consent.CampaignId&studentId=@consent.StudentId">Create Record</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">No consents found.</div>
+    }
+</div>

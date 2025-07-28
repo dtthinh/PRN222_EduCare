@@ -1,0 +1,91 @@
+﻿@page
+@model PRN222.Pages.Nurse.Vaccination.CreateVaccinationRecordModel
+@{
+    ViewData["Title"] = "Create Vaccination Record";
+}
+
+<h2>Create Vaccination Record</h2>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert @(Model.Message.Contains("success") ? "alert-success" : "alert-danger")">@Model.Message</div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="Record.CampaignId" class="form-label">Campaign</label>
+        @if (Model.Record.CampaignId > 0)
+        {
+            <select class="form-select" disabled>
+                @{
+                    var selectedCampaign = Model.Campaigns.FirstOrDefault(c => c.CampaignId == Model.Record.CampaignId);
+                }
+                <option value="@selectedCampaign?.CampaignId">@selectedCampaign?.Name</option>
+            </select>
+            <input type="hidden" asp-for="Record.CampaignId" />
+        }
+        else
+        {
+            <select asp-for="Record.CampaignId" class="form-select" asp-items="@(new SelectList(Model.Campaigns, "CampaignId", "Name"))">
+                <option value="">-- Select Campaign --</option>
+            </select>
+        }
+        <span asp-validation-for="Record.CampaignId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Record.StudentId" class="form-label">Student</label>
+        @if (Model.Record.StudentId > 0)
+        {
+            <select class="form-select" disabled>
+                @{
+                    var selectedStudent = Model.Students.FirstOrDefault(s => s.StudentId == Model.Record.StudentId);
+                }
+                <option value="@selectedStudent?.StudentId">@selectedStudent?.Fullname</option>
+            </select>
+            <input type="hidden" asp-for="Record.StudentId" />
+        }
+        else
+        {
+            <select asp-for="Record.StudentId" class="form-select" asp-items="@(new SelectList(Model.Students, "StudentId", "Fullname"))">
+                <option value="">-- Select Student --</option>
+            </select>
+        }
+        <span asp-validation-for="Record.StudentId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nurse</label>
+        <input class="form-control" value="@(Model.CurrentNurse.Fullname != null ? Model.CurrentNurse.Fullname : Model.Record.NurseId.ToString())" readonly />
+        <input type="hidden" asp-for="Record.NurseId" />
+        <span asp-validation-for="Record.NurseId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Record.DateInjected" class="form-label">Date Injected</label>
+        <input asp-for="Record.DateInjected" class="form-control" type="date" />
+        <span asp-validation-for="Record.DateInjected" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Record.Result" class="form-label">Result</label>
+        <select asp-for="Record.Result" class="form-select">
+            <option value="">-- Select Result --</option>
+            <option value="Đã tiêm">Đã tiêm</option>
+            <option value="Chưa tiêm">Chưa tiêm</option>
+            <option value="Hoãn">Hoãn</option>
+        </select>
+        <span asp-validation-for="Record.Result" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Record.ImmediateReaction" class="form-label">Immediate Reaction</label>
+        <input asp-for="Record.ImmediateReaction" class="form-control" />
+        <span asp-validation-for="Record.ImmediateReaction" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Record.Note" class="form-label">Note</label>
+        <textarea asp-for="Record.Note" class="form-control"></textarea>
+        <span asp-validation-for="Record.Note" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

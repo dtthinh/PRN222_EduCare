@@ -20,6 +20,7 @@ namespace Services
         Task<bool> CampaignTimeConflictAsync(DateTime date);
 
         // Consent
+        Task<List<VaccinationConsent>> GetAllConsentsAsync();
         Task<List<VaccinationConsent>> GetConsentsByCampaignAsync(int campaignId);
         Task<List<VaccinationConsent>> GetConsentsByParentIdAsync(int parentId);
         Task<VaccinationConsent?> GetConsentAsync(int campaignId, int studentId, int parentId);
