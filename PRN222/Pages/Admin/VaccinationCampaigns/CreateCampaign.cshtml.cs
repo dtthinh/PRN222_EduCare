@@ -6,6 +6,7 @@ using BOs.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 public class CreateCampaignModel : PageModel
 {
@@ -29,10 +30,10 @@ public class CreateCampaignModel : PageModel
     public List<SelectListItem> VaccineOptions { get; set; } = new();
     public List<SelectListItem> ClassOptions { get; set; } = new();
 
-    public async Task OnGetAsync()
+    private async Task PopulateSelectLists()
     {
-        var vaccines = await _vaccinationService.GetAllVaccinesAsync();
-        var classes = await _classService.GetAllClassesAsync();
+        var vaccines = await _vaccinationService.GetAllVaccinesAsync() ?? new List<Vaccine>();
+        var classes = await _classService.GetAllClassesAsync() ?? new List<Class>();
 
         VaccineOptions = vaccines.Select(v => new SelectListItem
         {
@@ -47,52 +48,56 @@ public class CreateCampaignModel : PageModel
         }).ToList();
     }
 
+    public async Task OnGetAsync()
+    {
+        Campaign.Date = DateTime.Today;
+        await PopulateSelectLists();
+    }
+
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
-            await OnGetAsync(); // Reload dropdowns
+            await PopulateSelectLists();
             return Page();
         }
 
-        // Check duplicate campaign name
         if (await _vaccinationService.CampaignNameExistsAsync(Campaign.Name))
         {
-            ModelState.AddModelError("Campaign.Name", "Tên chiến dịch đã tồn tại.");
-            await OnGetAsync();
+            ModelState.AddModelError("Campaign.Name", "Tên chiến dịch này đã tồn tại. Vui lòng chọn một tên khác.");
+            await PopulateSelectLists();
             return Page();
         }
 
-        // Check time conflict
         if (await _vaccinationService.CampaignTimeConflictAsync(Campaign.Date))
         {
-            ModelState.AddModelError("Campaign.Date", "Đã có chiến dịch khác trong vòng 30 phút.");
-            await OnGetAsync();
+            ModelState.AddModelError("Campaign.Date", "Đã có một chiến dịch khác được lên lịch trong vòng 30 phút so với thời gian bạn chọn.");
+            await PopulateSelectLists();
             return Page();
         }
 
-        // Create campaign
-        var createdCampaign = await _vaccinationService.CreateCampaignAsync(Campaign);
-
-        // Get students by selected classes
-        var students = await _studentService.GetStudentsByClassIdsAsync(SelectedClassIds);
-        foreach (var student in students)
+        if (SelectedClassIds == null || !SelectedClassIds.Any())
         {
-            if (student?.ParentId != null)
-            {
-                var consent = new VaccinationConsent
-                {
-                    CampaignId = createdCampaign.CampaignId,
-                    StudentId = student.StudentId,
-                    ParentId = student.ParentId.Value,
-                    IsAgreed = null,
-                    Note = null,
-                    DateConfirmed = null
-                };
-                await _vaccinationService.CreateConsentAsync(consent);
-            }
+            ModelState.AddModelError("SelectedClassIds", "Vui lòng chọn ít nhất một lớp học để áp dụng chiến dịch.");
+            await PopulateSelectLists();
+            return Page();
         }
 
+        var createdCampaign = await _vaccinationService.CreateCampaignAsync(Campaign);
+
+        var students = await _studentService.GetStudentsByClassIdsAsync(SelectedClassIds);
+        foreach (var student in students.Where(s => s?.ParentId != null))
+        {
+            var consent = new VaccinationConsent
+            {
+                CampaignId = createdCampaign.CampaignId,
+                StudentId = student.StudentId,
+                ParentId = student.ParentId.Value
+            };
+            await _vaccinationService.CreateConsentAsync(consent);
+        }
+
+        TempData["SuccessMessage"] = "Tạo chiến dịch tiêm chủng thành công!";
         return RedirectToPage("Campaigns");
     }
 }
