@@ -43,26 +43,6 @@ namespace PRN222.Pages.Parent
             } });
         }
 
-        public async Task<JsonResult> OnPostAssignStudentAsync([FromBody] AssignStudentRequest req)
-        {
-            int? parentId = HttpContext.Session.GetInt32("ParentId");
-            if (!parentId.HasValue)
-            {
-                Console.WriteLine($"[AssignStudent] Failed: No parentId in session for code {req.code}");
-                return new JsonResult(new { success = false, error = "Session expired. Please log in again." });
-            }
-            var result = await StudentDAO.Instance.AssignParentToStudentAsync(req.code, parentId.Value);
-            Console.WriteLine($"[AssignStudent] ParentId: {parentId.Value}, StudentCode: {req.code}, Result: {result}");
-            if (result)
-            {
-                return new JsonResult(new { success = true });
-            }
-            else
-            {
-                return new JsonResult(new { success = false, error = "Failed to assign student. The student may already be assigned or does not exist." });
-            }
-        }
-
         public int? GetHealthRecordIdForStudent(int studentId)
         {
             int? parentId = HttpContext.Session.GetInt32("ParentId");

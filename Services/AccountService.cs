@@ -55,9 +55,34 @@ namespace Services
             return await _accountRepo.DeleteAccountAsync(accountId);
         }
 
-        public async Task<bool> SignUpAsync(Account account)
+        public async Task<Account> SignUpByAdminAsync(Account newAccountDetails)
         {
-            return await _accountRepo.SignUpAsync(account);
+            if (newAccountDetails == null)
+            {
+                throw new ArgumentNullException(nameof(newAccountDetails));
+            }
+
+            var existingAccount = await _accountRepo.GetAccountByEmailAsync(newAccountDetails.Email);
+            if (existingAccount != null)
+            {
+                throw new InvalidOperationException("Một tài khoản với email này đã tồn tại.");
+            }
+
+            newAccountDetails.Password = BCrypt.Net.BCrypt.HashPassword(newAccountDetails.Password);
+            newAccountDetails.CreatedAt = DateTime.UtcNow;
+            newAccountDetails.UpdateAt = DateTime.UtcNow;
+
+            if (string.IsNullOrWhiteSpace(newAccountDetails.Status))
+            {
+                newAccountDetails.Status = "Active";
+            }
+
+            return await _accountRepo.CreateAccountAsync(newAccountDetails);
+        }
+
+        public async Task<List<Role>> GetAllRolesAsync()
+        {
+            return await _accountRepo.GetAllRolesAsync();
         }
 
         public async Task<bool> UpdateAccountAsync(Account account)
@@ -85,10 +110,6 @@ namespace Services
             return _accountRepo.VerifyPasswordResetTokenAsync(accountId, token);
         }
 
-        public Task<List<Role>> GetAllRolesAsync()
-        {
-            return _accountRepo.GetAllRolesAsync();
-        }
         public Task InvalidatePasswordResetTokenAsync(int accountId, string token)
         {
             return _accountRepo.InvalidatePasswordResetTokenAsync(accountId, token);

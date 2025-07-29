@@ -38,18 +38,38 @@ namespace DAOs
                                  .FirstOrDefaultAsync(s => s.StudentCode == studentCode);
         }
 
-        public async Task<bool> AssignParentToStudentAsync(string studentCode, int parentId)
+        public async Task<List<Student>> GetStudentsWithoutParentsByClassIdAsync(int classId)
         {
-            var student = await _context.Students
-                                        .FirstOrDefaultAsync(s => s.StudentCode == studentCode);
+            using (var context = new DataContext())
+            {
+                return await context.Students
+                    .Where(s => s.ClassId == classId && s.ParentId == null)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+        }
 
-            if (student == null || student.ParentId != null)
-                return false;
+        public async Task UpdateParentForStudentAsync(int studentId, int parentId)
+        {
+            using (var context = new DataContext())
+            {
+                var student = await context.Students.FindAsync(studentId);
+                if (student != null)
+                {
+                    student.ParentId = parentId;
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
 
-            student.ParentId = parentId;
-            student.UpdateAt = DateTime.UtcNow;
-
-            return await _context.SaveChangesAsync() > 0;
+        public async Task RemoveParentFromStudentAsync(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student != null)
+            {
+                student.ParentId = null; // Gán ParentId thành null
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<Student> CreateStudentAsync(Student student)
