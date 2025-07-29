@@ -20,6 +20,7 @@ namespace Services
         Task<bool> CampaignTimeConflictAsync(DateTime date);
 
         // Consent
+        Task<List<VaccinationConsent>> GetAllConsentsAsync();
         Task<List<VaccinationConsent>> GetConsentsByCampaignAsync(int campaignId);
         Task<List<VaccinationConsent>> GetConsentsByParentIdAsync(int parentId);
         Task<VaccinationConsent?> GetConsentAsync(int campaignId, int studentId, int parentId);
@@ -29,6 +30,7 @@ namespace Services
         Task AutoRejectUnconfirmedConsentsAsync(int campaignId, DateTime campaignDate);
 
         // Record
+        Task<List<VaccinationRecord>> GetAllRecordsAsync();
         Task<List<VaccinationRecord>> GetRecordsByCampaignAsync(int campaignId);
         Task<VaccinationRecord?> GetRecordByIdAsync(int id);
         Task<VaccinationRecord> CreateRecordAsync(VaccinationRecord record);

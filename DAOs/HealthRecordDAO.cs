@@ -40,6 +40,7 @@ namespace DAOs
         {
             return await _context.HealthRecords
                 .Include(hr => hr.Student)
+                .ThenInclude(s => s.Class)
                 .Include(hr => hr.Parent)
                 .FirstOrDefaultAsync(hr => hr.HealthRecordId == id);
         }

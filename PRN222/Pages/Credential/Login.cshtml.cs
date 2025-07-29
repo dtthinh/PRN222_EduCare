@@ -45,6 +45,7 @@ namespace PRN222.Pages.Credential
                 else
                 {
                     HttpContext.Session.SetString("Role", "Parent");
+                    HttpContext.Session.SetInt32("ParentId", logedAccount.AccountID);
                     return RedirectToPage("/Index");   // Redirect to Parent Home Page
                 }
             }

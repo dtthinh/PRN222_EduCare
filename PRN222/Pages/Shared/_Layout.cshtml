@@ -29,6 +29,15 @@
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Nurse/NurseHomePage">Nurse Home</a>
                                 </li>
                             }
+                            else if (Context.Session.GetString("Role") == "Parent")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Parent/HealthRecord">Health Record</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Parent/VaccineConsent">Vaccine Consent</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto">
