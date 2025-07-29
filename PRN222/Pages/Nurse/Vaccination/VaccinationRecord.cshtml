@@ -19,6 +19,7 @@
                 <th>Result</th>
                 <th>Immediate Reaction</th>
                 <th>Note</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,9 @@
                 <td>@record.Result</td>
                 <td>@record.ImmediateReaction</td>
                 <td>@record.Note</td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="/Nurse/VaccinationFollowUp/FollowUp?recordId=@record.RecordId">View Follow Ups</a>
+                </td>
             </tr>
         }
         </tbody>
