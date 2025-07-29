@@ -1,0 +1,101 @@
+﻿@page "{id:int}"
+@model DetailsCampaignModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chi Tiết Chiến Dịch Tiêm Chủng";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Campaign.Name</h4>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-3">Loại Vaccine</dt>
+                        <dd class="col-sm-9">@Model.Campaign.Vaccine?.Name</dd>
+
+                        <dt class="col-sm-3">Ngày tổ chức</dt>
+                        <dd class="col-sm-9">@Model.Campaign.Date.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-3">Mô tả</dt>
+                        <dd class="col-sm-9">
+                            <p style="white-space: pre-wrap;">@(string.IsNullOrEmpty(Model.Campaign.Description) ? "Không có mô tả." : Model.Campaign.Description)</p>
+                        </dd>
+                    </dl>
+
+                    <hr />
+
+                    <h4>Thống kê Phản hồi từ Phụ huynh</h4>
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Đã chấp thuận</h5>
+                                    <p class="card-text fs-2 fw-bold">@Model.ApprovedConsents.Count</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Đã từ chối</h5>
+                                    <p class="card-text fs-2 fw-bold">@Model.RejectedConsents.Count</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-warning text-dark">
+                                <div class="card-body">
+                                    <h5 class="card-title">Chờ phản hồi</h5>
+                                    <p class="card-text fs-2 fw-bold">@Model.PendingConsents.Count</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách học sinh đã chấp thuận -->
+                    <h5>Danh sách Học sinh đã được Phụ huynh Chấp thuận Tiêm chủng</h5>
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Học sinh</th>
+                                <th>Lớp</th>
+                                <th>Phụ huynh</th>
+                                <th>Ngày xác nhận</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.ApprovedConsents.Any())
+                            {
+                                <tr><td colspan="4" class="text-center">Chưa có phụ huynh nào chấp thuận.</td></tr>
+                            }
+                            else
+                            {
+                                @foreach (var consent in Model.ApprovedConsents)
+                                {
+                                    <tr>
+                                        <td>@consent.Student?.Fullname</td>
+                                        <td>@consent.Student?.Class?.ClassName</td>
+                                        <td>@consent.Parent?.Fullname</td>
+                                        <td>@consent.DateConfirmed?.ToString("g")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="card-footer bg-light text-end">
+                    <a asp-page="Campaigns" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

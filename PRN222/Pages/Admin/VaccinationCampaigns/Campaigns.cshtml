@@ -2,31 +2,56 @@
 @model CampaignsModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Danh sách chiến dịch tiêm chủng";
+    ViewData["Title"] = "Quản lý Chiến dịch Tiêm chủng";
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<a class="btn btn-primary mb-3" asp-page="CreateCampaign">Tạo chiến dịch mới</a>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Tên chiến dịch</th>
-            <th>Ngày</th>
-            <th>Vaccine</th>
-            <th>Mô tả</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Campaigns)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Date.ToShortDateString()</td>
-                <td>@item.Vaccine?.Name</td>
-                <td>@item.Description</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                    <a class="btn btn-primary" asp-page="CreateCampaign">
+                        <i class="fas fa-plus"></i> Tạo Chiến dịch Mới
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Tên chiến dịch</th>
+                                <th>Ngày tổ chức</th>
+                                <th>Loại Vaccine</th>
+                                <th style="width: 200px;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Campaigns == null || !Model.Campaigns.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        Chưa có chiến dịch tiêm chủng nào được tạo.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var campaign in Model.Campaigns)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => campaign.Name)</td>
+                                        <td>@campaign.Date.ToString("dd/MM/yyyy")</td>
+                                        <td>@Html.DisplayFor(modelItem => campaign.Vaccine.Name)</td>
+                                        <td>
+                                            <a asp-page="DetailsCampaign" asp-route-id="@campaign.CampaignId" class="btn btn-sm btn-info">Chi tiết</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

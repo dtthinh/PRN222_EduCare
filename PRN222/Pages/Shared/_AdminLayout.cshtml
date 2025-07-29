@@ -2,40 +2,55 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - Quản trị Hệ thống Y tế Học đường</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PRN222.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand fw-bold" asp-area="" asp-page="/Admin/Dashboard">Admin Panel</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" asp-page="/Admin/Dashboards/Dashboard">
+                    <i class="fas fa-school"></i> Y Tế Học Đường
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse">
                     <ul class="navbar-nav flex-grow-1">
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Admin/Dashboards/Dashboard">Dashboard</a>
+                            <a class="nav-link" asp-page="/Admin/Dashboards/Dashboard">
+                                <i class="fas fa-tachometer-alt"></i> Bảng điều khiển
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Admin/Account/Accounts">Quản lý tài khoản</a>
+                            <a class="nav-link" asp-page="/Admin/Account/Accounts">
+                                <i class="fas fa-users"></i> Quản lý tài khoản
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Admin/MedicalEvent/MedicalEvents">Lịch tiêm/khám</a>
+                            <a class="nav-link" asp-page="/Admin/MedicalEvent/MedicalEvents">
+                                <i class="fas fa-calendar-alt"></i> Sự kiện Y tế
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Admin/VaccinationCampaigns/Campaigns">Chiến dịch tiêm vaccine</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Admin/VaccinationCampaigns/Vaccines">Vaccine</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="vaccinationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-syringe"></i> Tiêm chủng
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="vaccinationDropdown">
+                                <li><a class="dropdown-item" asp-page="/Admin/VaccinationCampaigns/Campaigns">Chiến dịch</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/VaccinationCampaigns/Vaccines">Danh mục Vaccine</a></li>
+                            </ul>
                         </li>
                     </ul>
 
@@ -46,7 +61,9 @@
                             {
                                 <li class="nav-item">
                                     <form asp-page="/Credential/Logout" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-link nav-link">Đăng xuất</button>
+                                        <button type="submit" class="btn btn-link nav-link text-white-50">
+                                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                        </button>
                                     </form>
                                 </li>
                             }
@@ -57,15 +74,15 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-3">
+    <footer class="footer">
         <div class="container">
-            &copy; 2025 - PRN222 - <a asp-page="/Privacy">Chính sách bảo mật</a>
+            © 2025 - PRN222
         </div>
     </footer>
 
