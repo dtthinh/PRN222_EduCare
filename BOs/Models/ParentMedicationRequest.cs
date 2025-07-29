@@ -18,6 +18,6 @@ namespace BOs.Models
 
         public Account Parent { get; set; }
         public Student Student { get; set; }
-        public ICollection<ParentMedicationDetail> Medications { get; set; }
+        public IList<ParentMedicationDetail> Medications { get; set; }
     }
 }

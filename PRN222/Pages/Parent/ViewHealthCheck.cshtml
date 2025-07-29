@@ -1,0 +1,44 @@
+﻿@page
+@* Không cần khai báo route ở đây vì layout đã cung cấp tham số *@
+@model PRN222.Pages.Parent.HealthCheckModel
+@{
+    ViewData["Title"] = "Lịch sử khám sức khỏe";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+@if (Model.HealthChecks == null || !Model.HealthChecks.Any())
+{
+    <div class="alert alert-info">Chưa có dữ liệu khám sức khỏe nào cho con của bạn.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Học sinh</th>
+                <th>Ngày khám</th>
+                <th>Chiều cao (cm)</th>
+                <th>Cân nặng (kg)</th>
+                <th>Kết luận</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.HealthChecks)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Student.Fullname)</td>
+                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@Html.DisplayFor(modelItem => item.Height)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Weight)</td>
+                    <td>@Html.DisplayFor(modelItem => item.HealthCheckDescription)</td>
+                    <td>
+                        @* Liên kết đến trang chi tiết sử dụng HealthCheckID *@
+                        <a asp-page="./ViewHealthCheck" asp-route-id="@item.HealthCheckID" class="btn btn-sm btn-info">Xem chi tiết</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

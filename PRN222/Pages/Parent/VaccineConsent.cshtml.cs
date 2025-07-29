@@ -24,7 +24,7 @@ namespace PRN222.Pages.Parent
 
         public async Task<IActionResult> OnGetAsync()
         {
-            int? parentId = HttpContext.Session.GetInt32("ParentId");
+            int? parentId = HttpContext.Session.GetInt32("UserId");
             if (!parentId.HasValue)
             {
                 return RedirectToPage("/Credential/Login");
@@ -36,7 +36,7 @@ namespace PRN222.Pages.Parent
 
         public async Task<IActionResult> OnPostAsync()
         {
-            int? parentId = HttpContext.Session.GetInt32("ParentId");
+            int? parentId = HttpContext.Session.GetInt32("UserId");
             if (!parentId.HasValue)
             {
                 return RedirectToPage("/Credential/Login");
