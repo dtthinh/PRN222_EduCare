@@ -1,10 +1,10 @@
 ﻿@page
 @model PRN222.Pages.Nurse.NurseHomePageModel
 @{
-    ViewData["Title"] = "Nurse Home Page";
+    ViewData["Title"] = "Trang chủ y tá";
 }
 
-<h2 class="text-center mt-4 mb-4">Nurse Home Page</h2>
+<h2 class="text-center mt-4 mb-4">Trang chủ y tá</h2>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -12,22 +12,22 @@
             <ul class="list-group shadow-sm">
                 <li class="list-group-item">
                     <a asp-page="MedicationRequest" class="text-decoration-none fw-bold text-primary">
-                        <i class="bi bi-capsule"></i> Medication Request
+                        <i class="bi bi-capsule"></i> Yêu cầu cấp phát thuốc
                     </a>
                 </li>
                 <li class="list-group-item">
                     <a asp-page="Health Check/HealthCheck" class="text-decoration-none fw-bold text-success">
-                        <i class="bi bi-heart-pulse"></i> Health Check
+                        <i class="bi bi-heart-pulse"></i> Khám sức khỏe
                     </a>
                 </li>
                 <li class="list-group-item">
                     <a asp-page="Consent/ViewConsent" class="text-decoration-none fw-bold text-warning">
-                        <i class="bi bi-file-earmark-text"></i> View Consent
+                        <i class="bi bi-file-earmark-text"></i> Xem phiếu đồng ý
                     </a>
                 </li>
                 <li class="list-group-item">
                     <a asp-page="Vaccination/VaccinationRecord" class="text-decoration-none fw-bold text-info">
-                        <i class="bi bi-journal-medical"></i> View Record
+                        <i class="bi bi-journal-medical"></i> Xem hồ sơ tiêm chủng
                     </a>
                 </li>
             </ul>

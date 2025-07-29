@@ -1,17 +1,17 @@
 ﻿@page "{id:int}"
 @model PRN222.Pages.Nurse.Health_Check.DeleteHealthCheckModel
 @{
-    ViewData["Title"] = "Delete Health Check";
+    ViewData["Title"] = "Xóa phiếu khám sức khỏe";
 }
 
-<h1>Confirm Delete</h1>
+<h1>Xác nhận xóa</h1>
 
 <div class="alert alert-danger">
-    Are you sure you want to delete Health Check ID <strong>@Model.HealthCheck.HealthCheckID</strong>?
+    Bạn có chắc chắn muốn xóa phiếu khám sức khỏe với mã <strong>@Model.HealthCheck.HealthCheckID</strong> không?
 </div>
 
 <form method="post">
     <input type="hidden" asp-for="HealthCheck.HealthCheckID" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-page="HealthCheck" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-page="HealthCheck" class="btn btn-secondary">Hủy</a>
 </form>
