@@ -30,6 +30,7 @@ namespace Services
         Task AutoRejectUnconfirmedConsentsAsync(int campaignId, DateTime campaignDate);
 
         // Record
+        Task<List<VaccinationRecord>> GetAllRecordsAsync();
         Task<List<VaccinationRecord>> GetRecordsByCampaignAsync(int campaignId);
         Task<VaccinationRecord?> GetRecordByIdAsync(int id);
         Task<VaccinationRecord> CreateRecordAsync(VaccinationRecord record);

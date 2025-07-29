@@ -31,6 +31,7 @@ namespace Repos
             => VaccinationDAO.Instance.AutoRejectUnconfirmedConsentsAsync(campaignId, campaignDate);
 
         // Record
+        public Task<List<VaccinationRecord>> GetAllRecordsAsync() => VaccinationDAO.Instance.GetAllRecordsAsync();
         public Task<List<VaccinationRecord>> GetRecordsByCampaignAsync(int campaignId) => VaccinationDAO.Instance.GetRecordsByCampaignAsync(campaignId);
         public Task<VaccinationRecord?> GetRecordByIdAsync(int id) => VaccinationDAO.Instance.GetRecordByIdAsync(id);
         public Task<VaccinationRecord> CreateRecordAsync(VaccinationRecord record) => VaccinationDAO.Instance.CreateRecordAsync(record);

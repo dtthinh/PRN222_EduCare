@@ -64,7 +64,13 @@ namespace PRN222.Pages.Nurse.Vaccination
             if (nurseId.HasValue)
             {
                 Record.NurseId = nurseId.Value;
+                CurrentNurse = Nurses.FirstOrDefault(n => n.AccountID == nurseId.Value);
             }
+
+            // Remove navigation properties from ModelState
+            ModelState.Remove("Record.Campaign");
+            ModelState.Remove("Record.Student");
+            ModelState.Remove("Record.Nurse");
 
             if (!ModelState.IsValid)
             {

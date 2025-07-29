@@ -25,6 +25,7 @@ namespace Services
         public async Task<VaccinationConsent> UpdateConsentAsync(VaccinationConsent consent) => await _dao.UpdateConsentAsync(consent);
         public async Task<VaccinationConsent> CreateConsentAsync(VaccinationConsent consent) => await _dao.CreateConsentAsync(consent);
 
+        public async Task<List<VaccinationRecord>> GetAllRecordsAsync() => await _dao.GetAllRecordsAsync();
         public async Task<List<VaccinationRecord>> GetRecordsByCampaignAsync(int campaignId) => await _dao.GetRecordsByCampaignAsync(campaignId);
         public async Task<VaccinationRecord?> GetRecordByIdAsync(int id) => await _dao.GetRecordByIdAsync(id);
         public async Task<List<VaccinationRecord>> GetRecordsByStudentIdAsync(int studentId) => await _dao.GetRecordsByStudentIdAsync(studentId);
