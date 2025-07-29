@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using BOs.Models;
@@ -13,10 +14,10 @@ public class VaccinesModel : PageModel
         _vaccinationService = vaccinationService;
     }
 
-    public List<Vaccine> Vaccines { get; set; }
+    public List<Vaccine> Vaccines { get; set; } = new List<Vaccine>();
 
     public async Task OnGetAsync()
     {
-        Vaccines = await _vaccinationService.GetAllVaccinesAsync();
+        Vaccines = await _vaccinationService.GetAllVaccinesAsync() ?? new List<Vaccine>();
     }
 }

@@ -8,7 +8,7 @@ namespace Services
 {
     public class HealthCheckService : IHealthCheckService
     {
-        private readonly IHealthCheckRepo _repo;
+        private readonly HealthCheckRepo _repo;
 
         public HealthCheckService()
         {

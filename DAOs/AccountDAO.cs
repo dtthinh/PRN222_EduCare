@@ -95,6 +95,7 @@ namespace DAOs
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<List<Role>> GetAllRoleAsync() => await _context.Roles.AsNoTracking().ToListAsync();
         public async Task<bool> UpdateAccountAsync(Account account)
         {
             var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountID == account.AccountID);

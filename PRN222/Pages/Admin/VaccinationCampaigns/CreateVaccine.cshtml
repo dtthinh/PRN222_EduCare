@@ -5,17 +5,48 @@
     ViewData["Title"] = "Tạo Vaccine Mới";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Điền thông tin dưới đây để thêm một loại vaccine mới vào hệ thống.</p>
+                    <hr />
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form method="post">
-    <div class="mb-3">
-        <label class="form-label">Tên vaccine</label>
-        <input asp-for="Vaccine.Name" class="form-control" required />
+                        <div class="mb-3">
+                            <label asp-for="Vaccine.Name" class="form-label fw-bold"></label>
+                            <input asp-for="Vaccine.Name" class="form-control" placeholder="Ví dụ: Vắc-xin 5 trong 1 Pentaxim" />
+                            <span asp-validation-for="Vaccine.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Vaccine.Description" class="form-label fw-bold"></label>
+                            <textarea asp-for="Vaccine.Description" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết về vaccine, công dụng, nhà sản xuất..."></textarea>
+                            <span asp-validation-for="Vaccine.Description" class="text-danger"></span>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-end">
+                            <a asp-page="Vaccines" class="btn btn-secondary me-2">
+                                <i class="fas fa-times-circle"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Tạo Vaccine
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Mô tả</label>
-        <textarea asp-for="Vaccine.Description" class="form-control"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Tạo</button>
-    <a asp-page="Vaccines" class="btn btn-secondary">Quay lại</a>
-</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -12,6 +12,8 @@ namespace Repos
         Task<Account?> GetAccountByEmailAsync(string email);
         Task<Role?> GetRoleByIdAsync(int roleId);
         Task<List<Account>> GetAllAccountsAsync();
+
+        Task<List<Role>> GetAllRolesAsync();
         Task<bool> DeleteAccountAsync(int accountId);
         Task<bool> SignUpAsync(Account account);
         Task<bool> UpdateAccountAsync(Account account);

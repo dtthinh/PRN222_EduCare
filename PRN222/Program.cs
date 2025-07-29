@@ -14,6 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<DAOs.DashboardDAO>();
+
+
+
 // Repositories
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
@@ -25,7 +29,6 @@ builder.Services.AddScoped<IMedicationRepo, MedicationRepo>();
 builder.Services.AddScoped<IParentMedicationRequestRepo, ParentMedicationRequestRepo>();
 builder.Services.AddScoped<IMedicalSupplyRepo, MedicalSupplyRepo>();
 builder.Services.AddScoped<IVaccinationRepo, VaccinationRepo>();
-builder.Services.AddScoped<IHealthConsultationBookingRepo, HealthConsultationBookingRepo>();
 builder.Services.AddScoped<IDashboardRepo, DashboardRepo>();
 
 
@@ -43,11 +46,8 @@ builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IParentMedicationRequestService, ParentMedicationRequestService>();
 builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
-builder.Services.AddScoped<IHealthConsultationBookingService, HealthConsultationBookingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-//DAO
-builder.Services.AddScoped<HealthConsultationBookingDAO>();
 
 // add Session
 builder.Services.AddSession(options =>

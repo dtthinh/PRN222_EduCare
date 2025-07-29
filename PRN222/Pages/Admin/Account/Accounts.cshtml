@@ -1,36 +1,69 @@
 ﻿@page
 @model AccountsModel
 @{
-    ViewData["Title"] = "Quản lý tài khoản";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý Tài khoản";
 }
 
-<h2>Danh sách tài khoản</h2>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Họ tên</th>
-            <th>Email</th>
-            <th>Vai trò</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var acc in Model.Accounts)
-        {
-            <tr>
-                <td>@acc.Fullname</td>
-                <td>@acc.Email</td>
-                <td>@acc.Role?.RoleName</td>
-                <td>@acc.Status</td>
-                <td>
-                    <a asp-page="EditAccount" asp-route-id="@acc.AccountID">Sửa</a> |
-                    <form method="post" asp-page-handler="Delete" asp-route-id="@acc.AccountID" style="display:inline">
-                        <button class="btn btn-sm btn-danger">Xóa</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                    <a class="btn btn-primary" asp-page="CreateAccount">
+                        <i class="fas fa-user-plus"></i> Thêm Tài Khoản Mới
+                    </a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th style="width: 200px;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Accounts == null || !Model.Accounts.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        Không có tài khoản nào trong hệ thống.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var acc in Model.Accounts)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => acc.Fullname)</td>
+                                        <td>@Html.DisplayFor(modelItem => acc.Email)</td>
+                                        <td>@Html.DisplayFor(modelItem => acc.Role.RoleName)</td>
+                                        <td class="text-center">
+                                            @if (acc.Status == "Active")
+                                            {
+                                                <span class="badge bg-success">Hoạt động</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Không hoạt động</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-page="EditAccount" asp-route-id="@acc.AccountID" class="btn btn-sm btn-primary">Sửa</a>
+                                            <a asp-page="DetailsAccount" asp-route-id="@acc.AccountID" class="btn btn-sm btn-info">Chi tiết</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
