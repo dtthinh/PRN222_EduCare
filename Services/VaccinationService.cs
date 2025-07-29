@@ -17,6 +17,7 @@ namespace Services
         public async Task<VaccinationCampaign?> GetCampaignByIdAsync(int id) => await _dao.GetCampaignByIdAsync(id);
         public async Task<VaccinationCampaign> CreateCampaignAsync(VaccinationCampaign campaign) => await _dao.CreateCampaignAsync(campaign);
 
+        public async Task<List<VaccinationConsent>> GetAllConsentsAsync() => await _dao.GetAllConsentsAsync();
         public async Task<List<VaccinationConsent>> GetConsentsByCampaignAsync(int campaignId) => await _dao.GetConsentsByCampaignAsync(campaignId);
         public async Task<List<VaccinationConsent>> GetConsentsByParentIdAsync(int parentId) => await _dao.GetConsentsByParentIdAsync(parentId);
         public async Task<VaccinationConsent?> GetConsentAsync(int campaignId, int studentId, int parentId) => await _dao.GetConsentAsync(campaignId, studentId, parentId);
@@ -24,6 +25,7 @@ namespace Services
         public async Task<VaccinationConsent> UpdateConsentAsync(VaccinationConsent consent) => await _dao.UpdateConsentAsync(consent);
         public async Task<VaccinationConsent> CreateConsentAsync(VaccinationConsent consent) => await _dao.CreateConsentAsync(consent);
 
+        public async Task<List<VaccinationRecord>> GetAllRecordsAsync() => await _dao.GetAllRecordsAsync();
         public async Task<List<VaccinationRecord>> GetRecordsByCampaignAsync(int campaignId) => await _dao.GetRecordsByCampaignAsync(campaignId);
         public async Task<VaccinationRecord?> GetRecordByIdAsync(int id) => await _dao.GetRecordByIdAsync(id);
         public async Task<List<VaccinationRecord>> GetRecordsByStudentIdAsync(int studentId) => await _dao.GetRecordsByStudentIdAsync(studentId);

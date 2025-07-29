@@ -1,0 +1,40 @@
+﻿@page
+@model PRN222.Pages.Nurse.VaccinationFollowUp.FollowUpModel
+@{
+    ViewData["Title"] = "Vaccination Follow Ups";
+}
+
+<h2>Vaccination Follow Ups for Record @Model.RecordId</h2>
+
+<a class="btn btn-primary mb-3" href="./CreateFollowUp?recordId=@Model.RecordId">Create Follow Up</a>
+
+@if (Model.FollowUps != null && Model.FollowUps.Count > 0)
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Follow Up ID</th>
+                <th>Date</th>
+                <th>Reaction</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var followUp in Model.FollowUps)
+        {
+            <tr>
+                <td>@followUp.FollowUpId</td>
+                <td>@followUp.Date.ToString("dd/MM/yyyy")</td>
+                <td>@followUp.Reaction</td>
+                <td>@followUp.Note</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No follow up records found for this vaccination record.</div>
+}
+
+<a class="btn btn-primary mb-3" href="/Nurse/Vaccination/VaccinationRecord">Back to Vaccination</a>
