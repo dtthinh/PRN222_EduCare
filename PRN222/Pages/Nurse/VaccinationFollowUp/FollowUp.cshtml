@@ -1,22 +1,22 @@
 ﻿@page
 @model PRN222.Pages.Nurse.VaccinationFollowUp.FollowUpModel
 @{
-    ViewData["Title"] = "Vaccination Follow Ups";
+    ViewData["Title"] = "Danh sách phiếu theo dõi tiêm chủng";
 }
 
-<h2>Vaccination Follow Ups for Record @Model.RecordId</h2>
+<h2>Danh sách phiếu theo dõi tiêm chủng cho hồ sơ @Model.RecordId</h2>
 
-<a class="btn btn-primary mb-3" href="./CreateFollowUp?recordId=@Model.RecordId">Create Follow Up</a>
+<a class="btn btn-primary mb-3" href="./CreateFollowUp?recordId=@Model.RecordId">Tạo phiếu theo dõi</a>
 
 @if (Model.FollowUps != null && Model.FollowUps.Count > 0)
 {
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Follow Up ID</th>
-                <th>Date</th>
-                <th>Reaction</th>
-                <th>Note</th>
+                <th>Mã phiếu theo dõi</th>
+                <th>Ngày theo dõi</th>
+                <th>Phản ứng</th>
+                <th>Ghi chú</th>
             </tr>
         </thead>
         <tbody>
@@ -34,7 +34,7 @@
 }
 else
 {
-    <div class="alert alert-info">No follow up records found for this vaccination record.</div>
+    <div class="alert alert-info">Không tìm thấy phiếu theo dõi nào cho hồ sơ này.</div>
 }
 
-<a class="btn btn-primary mb-3" href="/Nurse/Vaccination/VaccinationRecord">Back to Vaccination</a>
+<a class="btn btn-primary mb-3" href="/Nurse/Vaccination/VaccinationRecord">Quay lại hồ sơ tiêm chủng</a>

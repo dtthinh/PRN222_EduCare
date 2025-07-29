@@ -1,10 +1,10 @@
 ﻿@page
 @model PRN222.Pages.Nurse.Vaccination.CreateVaccinationRecordModel
 @{
-    ViewData["Title"] = "Create Vaccination Record";
+    ViewData["Title"] = "Tạo hồ sơ tiêm chủng";
 }
 
-<h2>Create Vaccination Record</h2>
+<h2>Tạo hồ sơ tiêm chủng</h2>
 
 @if (!string.IsNullOrEmpty(Model.Message))
 {
@@ -13,7 +13,7 @@
 
 <form method="post">
     <div class="mb-3">
-        <label asp-for="Record.CampaignId" class="form-label">Campaign</label>
+        <label asp-for="Record.CampaignId" class="form-label">Chiến dịch</label>
         @if (Model.Record.CampaignId > 0)
         {
             <select class="form-select" disabled>
@@ -27,13 +27,13 @@
         else
         {
             <select asp-for="Record.CampaignId" class="form-select" asp-items="@(new SelectList(Model.Campaigns, "CampaignId", "Name"))">
-                <option value="">-- Select Campaign --</option>
+                <option value="">-- Chọn chiến dịch --</option>
             </select>
         }
         <span asp-validation-for="Record.CampaignId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Record.StudentId" class="form-label">Student</label>
+        <label asp-for="Record.StudentId" class="form-label">Học sinh</label>
         @if (Model.Record.StudentId > 0)
         {
             <select class="form-select" disabled>
@@ -47,26 +47,26 @@
         else
         {
             <select asp-for="Record.StudentId" class="form-select" asp-items="@(new SelectList(Model.Students, "StudentId", "Fullname"))">
-                <option value="">-- Select Student --</option>
+                <option value="">-- Chọn học sinh --</option>
             </select>
         }
         <span asp-validation-for="Record.StudentId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label class="form-label">Nurse</label>
+        <label class="form-label">Y tá</label>
         <input class="form-control" value="@(Model.CurrentNurse.Fullname != null ? Model.CurrentNurse.Fullname : Model.Record.NurseId.ToString())" readonly />
         <input type="hidden" asp-for="Record.NurseId" />
         <span asp-validation-for="Record.NurseId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Record.DateInjected" class="form-label">Date Injected</label>
+        <label asp-for="Record.DateInjected" class="form-label">Ngày tiêm</label>
         <input asp-for="Record.DateInjected" class="form-control" type="date" />
         <span asp-validation-for="Record.DateInjected" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Record.Result" class="form-label">Result</label>
+        <label asp-for="Record.Result" class="form-label">Kết quả</label>
         <select asp-for="Record.Result" class="form-select">
-            <option value="">-- Select Result --</option>
+            <option value="">-- Chọn kết quả --</option>
             <option value="Đã tiêm">Đã tiêm</option>
             <option value="Chưa tiêm">Chưa tiêm</option>
             <option value="Hoãn">Hoãn</option>
@@ -74,19 +74,19 @@
         <span asp-validation-for="Record.Result" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Record.ImmediateReaction" class="form-label">Immediate Reaction</label>
+        <label asp-for="Record.ImmediateReaction" class="form-label">Phản ứng tức thì</label>
         <input asp-for="Record.ImmediateReaction" class="form-control" />
         <span asp-validation-for="Record.ImmediateReaction" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Record.Note" class="form-label">Note</label>
+        <label asp-for="Record.Note" class="form-label">Ghi chú</label>
         <textarea asp-for="Record.Note" class="form-control"></textarea>
         <span asp-validation-for="Record.Note" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Tạo</button>
 </form>
 
-<a class="btn btn-primary mb-3" href="/Nurse/Consent/ViewConsent">Back to view Consent</a>
+<a class="btn btn-primary mb-3" href="/Nurse/Consent/ViewConsent">Quay lại phiếu đồng ý</a>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
