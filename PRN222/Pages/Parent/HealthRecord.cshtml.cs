@@ -16,7 +16,7 @@ namespace PRN222.Pages.Parent
 
         public async Task OnGetAsync()
         {
-            int? parentId = HttpContext.Session.GetInt32("ParentId");
+            int? parentId = HttpContext.Session.GetInt32("UserId");
             if (parentId.HasValue)
             {
                 AssignedStudents = await StudentDAO.Instance.GetStudentsByParentIdAsync(parentId.Value);
@@ -45,7 +45,7 @@ namespace PRN222.Pages.Parent
 
         public int? GetHealthRecordIdForStudent(int studentId)
         {
-            int? parentId = HttpContext.Session.GetInt32("ParentId");
+            int? parentId = HttpContext.Session.GetInt32("UserId");
             if (!parentId.HasValue) return null;
             var record = HealthRecordDAO.Instance.GetHealthRecordsByStudentIdAsync(studentId).Result
                 .FirstOrDefault(hr => hr.ParentId == parentId.Value);

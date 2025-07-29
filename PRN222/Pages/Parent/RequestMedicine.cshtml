@@ -1,0 +1,184 @@
+﻿@page
+@model PRN222.Pages.Parent.RequestMedicineModel
+@{
+    ViewData["Title"] = "Tạo Yêu Cầu Gửi Thuốc";
+    // Biến để kiểm tra xem có học sinh để chọn hay không
+    var hasStudents = Model.StudentOptions.Any();
+}
+
+<style>
+    .medication-item {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #f9f9f9;
+        position: relative;
+    }
+
+    .remove-medication-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form method="post">
+    <fieldset disabled="@(!hasStudents)">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="MedicationRequest.StudentId" class="control-label">Chọn học sinh</label>
+                    <select asp-for="MedicationRequest.StudentId" asp-items="Model.StudentOptions" class="form-control">
+                        <option value="">-- Vui lòng chọn --</option>
+                    </select>
+                    <span asp-validation-for="MedicationRequest.StudentId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="MedicationRequest.ParentNote" class="control-label">Ghi chú chung của phụ huynh</label>
+                    <textarea asp-for="MedicationRequest.ParentNote" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <h4>Chi tiết thuốc</h4>
+
+        <div id="medication-list">
+            @for (var i = 0; i < Model.MedicationRequest.Medications.Count; i++)
+            {
+                <div class="medication-item">
+                    <h5>Thuốc @(i + 1)</h5>
+                    @if (i > 0)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-medication-btn">Xóa</button>
+                    }
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label asp-for="MedicationRequest.Medications[i].Name" class="control-label">Tên thuốc (*)</label>
+                            <input asp-for="MedicationRequest.Medications[i].Name" class="form-control" />
+                            <span asp-validation-for="MedicationRequest.Medications[i].Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label asp-for="MedicationRequest.Medications[i].Dosage" class="control-label">Liều lượng</label>
+                            <input asp-for="MedicationRequest.Medications[i].Dosage" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label asp-for="MedicationRequest.Medications[i].Type" class="control-label">Dạng thuốc (viên, siro,...)</label>
+                            <input asp-for="MedicationRequest.Medications[i].Type" class="form-control" />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label asp-for="MedicationRequest.Medications[i].ExpiredDate" class="control-label">Ngày hết hạn</label>
+                            <input asp-for="MedicationRequest.Medications[i].ExpiredDate" type="date" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MedicationRequest.Medications[i].Usage" class="control-label">Hướng dẫn sử dụng</label>
+                        <textarea asp-for="MedicationRequest.Medications[i].Usage" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MedicationRequest.Medications[i].Note" class="control-label">Ghi chú thêm cho thuốc</label>
+                        <textarea asp-for="MedicationRequest.Medications[i].Note" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="button" id="add-medication-btn" class="btn btn-secondary mb-3">Thêm thuốc khác</button>
+
+        <div class="form-group mt-3">
+            <input type="submit" value="Gửi Yêu Cầu" class="btn btn-primary" />
+            <a asp-page="./MedicationRequestHistory" class="btn btn-light">Hủy</a>
+        </div>
+    </fieldset>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $("#add-medication-btn").click(function () {
+                var list = $("#medication-list");
+                var index = list.find(".medication-item").length;
+                var template = `
+                    <div class="medication-item">
+                        <h5>Thuốc ${index + 1}</h5>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-medication-btn">Xóa</button>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="control-label" for="MedicationRequest_Medications_${index}__Name">Tên thuốc (*)</label>
+                                <input class="form-control" type="text" id="MedicationRequest_Medications_${index}__Name" name="MedicationRequest.Medications[${index}].Name" data-val="true" data-val-required="The Name field is required.">
+                                <span class="text-danger field-validation-valid" data-valmsg-for="MedicationRequest.Medications[${index}].Name" data-valmsg-replace="true"></span>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="control-label" for="MedicationRequest_Medications_${index}__Dosage">Liều lượng</label>
+                                <input class="form-control" type="text" id="MedicationRequest_Medications_${index}__Dosage" name="MedicationRequest.Medications[${index}].Dosage">
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="control-label" for="MedicationRequest_Medications_${index}__Type">Dạng thuốc (viên, siro,...)</label>
+                                <input class="form-control" type="text" id="MedicationRequest_Medications_${index}__Type" name="MedicationRequest.Medications[${index}].Type">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="control-label" for="MedicationRequest_Medications_${index}__ExpiredDate">Ngày hết hạn</label>
+                                <input class="form-control" type="date" id="MedicationRequest_Medications_${index}__ExpiredDate" name="MedicationRequest.Medications[${index}].ExpiredDate">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="MedicationRequest_Medications_${index}__Usage">Hướng dẫn sử dụng</label>
+                            <textarea class="form-control" rows="2" id="MedicationRequest_Medications_${index}__Usage" name="MedicationRequest.Medications[${index}].Usage"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="MedicationRequest_Medications_${index}__Note">Ghi chú thêm cho thuốc</label>
+                            <textarea class="form-control" rows="2" id="MedicationRequest_Medications_${index}__Note" name="MedicationRequest.Medications[${index}].Note"></textarea>
+                        </div>
+                    </div>`;
+
+                list.append(template);
+                var form = $("form");
+                form.removeData("validator");
+                form.removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse(form);
+            });
+
+            $("#medication-list").on("click", ".remove-medication-btn", function () {
+                $(this).closest(".medication-item").remove();
+                $("#medication-list .medication-item").each(function (i, el) {
+                    $(el).find('h5').text('Thuốc ' + (i + 1));
+                    $(el).find('input, textarea, select').each(function() {
+                        var oldName = $(this).attr('name');
+                        if(oldName) {
+                            var newName = oldName.replace(/\[\d+\]/, '[' + i + ']');
+                            $(this).attr('name', newName);
+                        }
+                         var oldId = $(this).attr('id');
+                         if(oldId){
+                            var newId = oldId.replace(/_\d+__/, '_' + i + '__');
+                             $(this).attr('id', newId);
+                         }
+                    });
+                });
+            });
+        });
+    </script>
+}

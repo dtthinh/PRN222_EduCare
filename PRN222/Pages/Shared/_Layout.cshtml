@@ -14,7 +14,7 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">PRN222</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -23,38 +23,55 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         @{
-                            if (Context.Session.GetString("Role") == "Nurse")
+                            // Lấy vai trò và ID người dùng MỘT LẦN để sử dụng
+                            var userRole = Context.Session.GetString("Role");
+                            var userId = Context.Session.GetInt32("UserId");
+
+                            if (userRole == "Nurse")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Nurse/NurseHomePage">Nurse Home</a>
                                 </li>
                             }
-                            else if (Context.Session.GetString("Role") == "Parent")
+                            else if (userRole == "Parent")
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-page="/Parent/HealthRecord">Health Record</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-page="/Parent/VaccineConsent">Vaccine Consent</a>
-                                </li>
+                                // BƯỚC QUAN TRỌNG: Chỉ hiển thị menu nếu người dùng đã đăng nhập (userId có giá trị)
+                                if (userId.HasValue)
+                                {
+                                    <li class="nav-item">
+                                        @*
+                                            SỬA LỖI TẠI ĐÂY:
+                                            1. Sử dụng đúng tham số route: asp-route-parentId
+                                            2. Sử dụng đúng biến: @userId.Value
+                                        *@
+                                        <a class="nav-link text-dark" asp-area="" asp-page="/Parent/ViewHealthCheck" asp-route-id="@userId.Value">Khám sức khỏe</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-page="/Parent/VaccineConsent">Đăng ký tiêm chủng</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-page="/Parent/RequestMedicine">Gửi Yêu Cầu Thuốc</a>
+                                    </li>
+                                }
                             }
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @{
-                            // Check if session contains "UserId"
-                            if (Context.Session.GetString("UserId") != null)
+                            // Kiểm tra lại nếu userId tồn tại để hiển thị nút Logout
+                            if (userId.HasValue)
                             {
-                                // <li class="nav-item">
-                                //     <a class="btn btn-outline-primary me-2" asp-page="Credential/UserProfile">
-                                //         User Profile
-                                //     </a>
-                                // </li>
-
                                 <li class="nav-item">
-                                    <form asp-page="/Credential/Logout" method="post" class="d-inline">
+                                    @* Giả sử trang logout của bạn nằm ở đây, hãy chỉnh lại nếu cần *@
+                                    <form asp-page="/Credential/Login" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-link nav-link btn-outline-danger me-3">Logout</button>
                                     </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="btn btn-primary" asp-area="" asp-page="/Credential/Login">Login</a>
                                 </li>
                             }
                         }
@@ -71,7 +88,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - PRN222 - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            © 2025 - PRN222 - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 
