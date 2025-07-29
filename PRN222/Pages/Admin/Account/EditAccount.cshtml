@@ -16,14 +16,11 @@
                     <h5 class="card-title">Tài khoản: @Model.Account.Email</h5>
                     <p class="card-text">Cập nhật thông tin cho người dùng dưới đây.</p>
                     <hr />
-                    <form method="post">
+                    <form method="post" id="editAccountForm">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <input type="hidden" asp-for="Account.AccountID" />
-                        <input type="hidden" asp-for="Account.Email" />
-                        <input type="hidden" asp-for="Account.Password" />
-                        <input type="hidden" asp-for="Account.DateOfBirth" />
-                        <input type="hidden" asp-for="Account.CreatedAt" />
+                        <input type="hidden" asp-for="Account.RoleID" />
 
                         <div class="mb-3">
                             <label asp-for="Account.Fullname" class="form-label fw-bold"></label>
@@ -33,11 +30,8 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Account.RoleID" class="form-label fw-bold">Vai trò</label>
-                                <select asp-for="Account.RoleID" class="form-select" asp-items="Model.RoleOptions">
-                                    <option value="">-- Chọn vai trò --</option>
-                                </select>
-                                <span asp-validation-for="Account.RoleID" class="text-danger"></span>
+                                <label class="form-label fw-bold">Vai trò</label>
+                                <input type="text" class="form-control" value="@Model.Account.Role?.RoleName" readonly />
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Account.Status" class="form-label fw-bold">Trạng thái</label>
@@ -46,6 +40,51 @@
                                 <span asp-validation-for="Account.Status" class="text-danger"></span>
                             </div>
                         </div>
+
+                        @if (Model.Account.RoleID == 3)
+                        {
+                            <hr />
+                            <div id="student-management-area" class="border p-3 rounded bg-light mb-3">
+                                <h5 class="mb-3">Quản lý Học sinh Liên kết</h5>
+
+                                <p>Các học sinh hiện tại của phụ huynh:</p>
+                                <ul id="linked-students-list" class="list-group mb-3">
+                                    @if (Model.LinkedStudents.Any())
+                                    {
+                                        @foreach (var student in Model.LinkedStudents)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center" data-student-id="@student.StudentId">
+                                                <span>@student.Fullname (@student.StudentCode)</span>
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-student-btn" data-student-id="@student.StudentId">Loại bỏ</button>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li id="no-student-linked" class="list-group-item text-muted"><em>Chưa có học sinh nào được liên kết.</em></li>
+                                    }
+                                </ul>
+
+                                <hr />
+
+                                <p class="fw-bold">Thêm học sinh mới cho phụ huynh này:</p>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Chọn lớp</label>
+                                        <select id="class-select" class="form-select" asp-items="Model.ClassOptions">
+                                            <option value="">-- Chọn lớp để xem học sinh --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="NewStudentId" class="form-label">Chọn học sinh (chưa có phụ huynh)</label>
+                                        <select asp-for="NewStudentId" id="student-select" class="form-select" disabled>
+                                            <option value="">-- Chờ chọn lớp --</option>
+                                        </select>
+                                        <span asp-validation-for="NewStudentId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
                         <hr />
 
@@ -66,4 +105,69 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const classSelect = $('#class-select');
+            const studentSelect = $('#student-select');
+            const linkedStudentsList = $('#linked-students-list');
+
+            classSelect.on('change', function() {
+                const classId = $(this).val();
+                studentSelect.prop('disabled', true).html('<option value="">-- Đang tải... --</option>');
+
+                if (!classId) {
+                    studentSelect.html('<option value="">-- Chờ chọn lớp --</option>');
+                    return;
+                }
+
+                $.ajax({
+                    url: `?handler=StudentsWithoutParentsByClass&classId=${classId}`,
+                    type: 'GET',
+                    success: function(data) {
+                        studentSelect.empty().append('<option value="">-- Chọn học sinh để gán --</option>');
+                        if (data && data.length > 0) {
+                            $.each(data, function(i, student) {
+                                studentSelect.append(`<option value="${student.id}">${student.name}</option>`);
+                            });
+                            studentSelect.prop('disabled', false);
+                        } else {
+                            studentSelect.html('<option value="">-- Không có học sinh nào chưa có phụ huynh --</option>');
+                        }
+                    }
+                });
+            });
+
+            // AJAX để loại bỏ học sinh
+            linkedStudentsList.on('click', '.remove-student-btn', function(e) {
+                e.preventDefault();
+                const studentIdToRemove = $(this).data('student-id');
+                const listItem = $(this).closest('li');
+
+                if (confirm('Bạn có chắc chắn muốn loại bỏ học sinh này khỏi phụ huynh?')) {
+                     $.ajax({
+                        url: `?handler=RemoveStudent`,
+                        type: 'POST',
+                        data: { studentId: studentIdToRemove },
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        success: function(response) {
+                            if (response.success) {
+                                listItem.fadeOut(300, function() {
+                                    $(this).remove();
+                                    if(linkedStudentsList.find('li').length === 0){
+                                        linkedStudentsList.append('<li id="no-student-linked" class="list-group-item text-muted"><em>Chưa có học sinh nào được liên kết.</em></li>');
+                                    }
+                                });
+                            } else {
+                                alert('Lỗi: ' + response.message);
+                            }
+                        },
+                        error: function() {
+                             alert('Đã có lỗi xảy ra. Vui lòng thử lại.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

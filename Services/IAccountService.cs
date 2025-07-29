@@ -14,12 +14,12 @@ namespace Services
         Task<Account?> GetAccountByIdAsync(int accountId);
         Task<Account?> Login(string email, string password);
 
+        Task<Account> SignUpByAdminAsync(Account account);
         Task<List<Role>> GetAllRolesAsync();
         Task<List<Account>> GetAllAccountsAsync();
         Task<List<Account>> SearchAccountsByFullNameAsync(string searchTerm);
         Task<Account?> SearchAccountByIdAsync(int accountId);
         Task<bool> DeleteAccountAsync(int accountId);
-        Task<bool> SignUpAsync(Account account);
         Task<bool> UpdateAccountAsync(Account account);
         Task<bool> UpdateAccountStatusAsync(Account account, string status);
         Task<Role?> GetRoleByIdAsync(int roleId);

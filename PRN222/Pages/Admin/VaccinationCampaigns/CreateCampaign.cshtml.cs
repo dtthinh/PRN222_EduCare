@@ -56,6 +56,7 @@ public class CreateCampaignModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        ModelState.Clear();
         if (!ModelState.IsValid)
         {
             await PopulateSelectLists();

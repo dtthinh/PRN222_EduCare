@@ -10,12 +10,11 @@ namespace Repos
     public interface IAccountRepo
     {
         Task<Account?> GetAccountByEmailAsync(string email);
-        Task<Role?> GetRoleByIdAsync(int roleId);
         Task<List<Account>> GetAllAccountsAsync();
-
+        Task<Account> CreateAccountAsync(Account account);
         Task<List<Role>> GetAllRolesAsync();
+        Task<Role?> GetRoleByIdAsync(int roleId);
         Task<bool> DeleteAccountAsync(int accountId);
-        Task<bool> SignUpAsync(Account account);
         Task<bool> UpdateAccountAsync(Account account);
         Task<Account?> Login(string email, string password);
         Task<Account?> GetAccountByIdAsync(int accountId);

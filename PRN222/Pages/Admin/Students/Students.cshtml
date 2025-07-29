@@ -1,0 +1,58 @@
+﻿@page
+@model StudentsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý Học sinh";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-page="CreateStudent" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Thêm Học sinh Mới
+    </a>
+</p>
+
+@if (!Model.StudentsByClass.Any())
+{
+    <div class="alert alert-info">Chưa có học sinh nào trong hệ thống.</div>
+}
+else
+{
+    @foreach (var classGroup in Model.StudentsByClass.OrderBy(c => c.Key.ClassName))
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Lớp: @classGroup.Key.ClassName</h4>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Mã HS</th>
+                            <th>Họ và tên</th>
+                            <th>Giới tính</th>
+                            <th>Ngày sinh</th>
+                            <th style="width: 200px;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in classGroup.Value.OrderBy(s => s.Fullname))
+                        {
+                            <tr>
+                                <td>@student.StudentCode</td>
+                                <td>@student.Fullname</td>
+                                <td>@student.Gender</td>
+                                <td>@student.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a asp-page="EditStudent" asp-route-id="@student.StudentId" class="btn btn-sm btn-primary">Sửa</a>
+                                    <a asp-page="DetailsStudent" asp-route-id="@student.StudentId" class="btn btn-sm btn-info">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

@@ -22,6 +22,7 @@ public class CreateVaccineModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        ModelState.Clear();
         if (!ModelState.IsValid)
         {
             return Page();
