@@ -25,8 +25,6 @@ namespace BOs.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Class> Classes { get; set; }
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<HealthRecord> HealthRecords { get; set; }
         public DbSet<MedicalEvent> MedicalEvents { get; set; }
@@ -42,11 +40,10 @@ namespace BOs.Data
         public DbSet<HealthCheck> HealthChecks { get; set; }
         public DbSet<MedicalEventMedication> MedicalEventMedications { get; set; }
         public DbSet<MedicalEventMedicalSupply> MedicalEventMedicalSupplies { get; set; }
-        public DbSet<HealthConsultationBooking> HealthConsultationBookings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString());
-        private string GetConnectionString()
+        private static string GetConnectionString()
         {
             IConfiguration configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -197,60 +194,6 @@ namespace BOs.Data
                 entity.HasOne(e => e.Account)
                       .WithMany(a => a.PasswordResetTokens)
                       .HasForeignKey(e => e.AccountID)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-            #endregion
-
-            #region Category
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.ToTable("Category");
-
-                entity.HasKey(c => c.CategoryID);
-
-                entity.Property(c => c.Name)
-                      .IsRequired()
-                      .HasMaxLength(100)
-                      .IsUnicode(true);
-
-                entity.HasMany(c => c.Blogs)
-                      .WithOne(b => b.Category)
-                      .HasForeignKey(b => b.CategoryID);
-            });
-            #endregion
-
-            #region Blog
-            modelBuilder.Entity<Blog>(entity =>
-            {
-                entity.ToTable("Blog");
-
-                entity.HasKey(b => b.BlogID);
-
-                entity.Property(b => b.Title)
-                      .IsRequired()
-                      .HasMaxLength(255)
-                      .IsUnicode(true);
-
-                entity.Property(b => b.Description)
-                      .HasMaxLength(500)
-                      .IsUnicode(true);
-
-                entity.Property(b => b.Content)
-                      .IsRequired()
-                      .IsUnicode(true);
-
-                entity.Property(b => b.Image)
-                      .HasColumnType("varbinary(max)")  // Dữ liệu nhị phân lớn
-                      .IsRequired(false);
-
-                entity.HasOne(b => b.Account)
-                      .WithMany() // Nếu bạn có List<Blog> trong Account thì sửa thành .WithMany(a => a.Blogs)
-                      .HasForeignKey(b => b.AccountID)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(b => b.Category)
-                      .WithMany(c => c.Blogs)
-                      .HasForeignKey(b => b.CategoryID)
                       .OnDelete(DeleteBehavior.Cascade);
             });
             #endregion
@@ -593,32 +536,6 @@ namespace BOs.Data
                 entity.HasOne(e => e.MedicalSupply)
                       .WithMany(s => s.MedicalEventMedicalSupplies)
                       .HasForeignKey(e => e.MedicalSupplyId);
-            });
-            #endregion
-
-            #region HealthConsultationBooking
-            modelBuilder.Entity<HealthConsultationBooking>(entity =>
-            {
-                entity.ToTable("HealthConsultationBooking");
-                entity.HasKey(b => b.BookingId);
-
-                entity.Property(b => b.Reason).HasMaxLength(1000).IsUnicode(true);
-                entity.Property(b => b.Status).HasMaxLength(50).IsUnicode(true);
-
-                entity.HasOne(b => b.Student)
-                      .WithMany()
-                      .HasForeignKey(b => b.StudentId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(b => b.Nurse)
-                      .WithMany()
-                      .HasForeignKey(b => b.NurseId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(b => b.Parent)
-                      .WithMany()
-                      .HasForeignKey(b => b.ParentId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
 

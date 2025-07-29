@@ -15,9 +15,11 @@ namespace Services
         Task<bool> UpdateStudentAsync(Student student);
         Task<bool> DeleteStudentAsync(int id);
         Task<Student?> GetStudentByCodeAsync(string studentCode);
-        Task<bool> LinkStudentToParentAsync(string studentCode, int parentId);
         Task<List<Student>> GetStudentsByParentIdAsync(int parentId);
         Task<List<Student>> GetStudentsByClassIdAsync(int classId);
         Task<List<Student>> GetStudentsByClassIdsAsync(List<int> classIds);
+        Task<List<Student>> GetStudentsWithoutParentsByClassIdAsync(int classId);
+        Task UpdateParentForStudentAsync(int studentId, int parentId);
+        Task RemoveParentFromStudentAsync(int studentId);
     }
 }

@@ -42,11 +42,6 @@ namespace DAOs
                                  .FirstOrDefaultAsync(a => a.Email == email);
         }
 
-        public async Task<Role?> GetRoleByIdAsync(int roleId)
-        {
-            return await _context.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.RoleID == roleId);
-        }
-
         public async Task<List<Account>> GetAllAccountsAsync()
         {
             return await _context.Accounts.AsNoTracking().Include(a => a.Role).ToListAsync();
@@ -61,40 +56,22 @@ namespace DAOs
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> SignUpAsync(Account account)
+        public async Task<Account> CreateAccountAsync(Account account)
         {
-            var existingAccount = await _context.Accounts.AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Email == account.Email);
-
-            if (existingAccount != null)
-            {
-                if (existingAccount.Status.Equals("Reject", StringComparison.OrdinalIgnoreCase))
-                {
-                    existingAccount.Fullname = account.Fullname;
-                    existingAccount.Address = account.Address;
-                    existingAccount.PhoneNumber = account.PhoneNumber;
-                    existingAccount.DateOfBirth = account.DateOfBirth;
-                    existingAccount.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
-                    existingAccount.Status = "Pending";
-                    existingAccount.UpdateAt = DateTime.UtcNow;
-
-                    _context.Accounts.Update(existingAccount);
-                    return await _context.SaveChangesAsync() > 0;
-                }
-                return false;
-            }
-
-            account.RoleID = account.RoleID == 0 ? 1 : account.RoleID;
-            if (string.IsNullOrWhiteSpace(account.Status))
-            {
-                account.Status = (account.RoleID == 3) ? "Active" : "Pending";
-            }
-            account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
-
             await _context.Accounts.AddAsync(account);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return account;
         }
 
+        public async Task<List<Role>> GetAllRolesAsync()
+        {
+            return await _context.Roles.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Role?> GetRoleByIdAsync(int roleId)
+        {
+            return await _context.Roles.FindAsync(roleId);
+        }
         public async Task<bool> UpdateAccountAsync(Account account)
         {
             var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountID == account.AccountID);
@@ -288,11 +265,6 @@ namespace DAOs
             return await _context.Accounts
                 .Where(a => a.RoleID == 2 && a.Status == "Active")
                 .ToListAsync();
-        }
-
-        public async Task<List<Role>> GetAllRolesAsync()
-        {
-            return await _context.Roles.AsNoTracking().ToListAsync();
         }
     }
 }

@@ -14,15 +14,11 @@ namespace Services
     public class AccountService : IAccountService
     {
         private readonly IAccountRepo _accountRepo;
-        private readonly IDistributedCache _cache;
 
-        public AccountService(IAccountRepo accountRepo, IDistributedCache cache)
+        public AccountService(IAccountRepo accountRepo)
         {
             _accountRepo = accountRepo;
-            _cache = cache;
         }
-
-        private string GetOtpCacheKey(string email) => $"OTP_{email}";
 
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
@@ -59,9 +55,34 @@ namespace Services
             return await _accountRepo.DeleteAccountAsync(accountId);
         }
 
-        public async Task<bool> SignUpAsync(Account account)
+        public async Task<Account> SignUpByAdminAsync(Account newAccountDetails)
         {
-            return await _accountRepo.SignUpAsync(account);
+            if (newAccountDetails == null)
+            {
+                throw new ArgumentNullException(nameof(newAccountDetails));
+            }
+
+            var existingAccount = await _accountRepo.GetAccountByEmailAsync(newAccountDetails.Email);
+            if (existingAccount != null)
+            {
+                throw new InvalidOperationException("Một tài khoản với email này đã tồn tại.");
+            }
+
+            newAccountDetails.Password = BCrypt.Net.BCrypt.HashPassword(newAccountDetails.Password);
+            newAccountDetails.CreatedAt = DateTime.UtcNow;
+            newAccountDetails.UpdateAt = DateTime.UtcNow;
+
+            if (string.IsNullOrWhiteSpace(newAccountDetails.Status))
+            {
+                newAccountDetails.Status = "Active";
+            }
+
+            return await _accountRepo.CreateAccountAsync(newAccountDetails);
+        }
+
+        public async Task<List<Role>> GetAllRolesAsync()
+        {
+            return await _accountRepo.GetAllRolesAsync();
         }
 
         public async Task<bool> UpdateAccountAsync(Account account)
@@ -109,48 +130,6 @@ namespace Services
             return await _accountRepo.GetActiveNursesAsync();
         }
 
-        // =================== OTP Cache ===================
-
-        public async Task<bool> SaveOtpAsync(string email, string otp, DateTime expiration)
-        {
-            var otpInfo = new OtpInfo { Code = otp, Expiration = expiration };
-            var options = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = expiration
-            };
-            var json = JsonSerializer.Serialize(otpInfo);
-            try
-            {
-                await _cache.SetStringAsync(GetOtpCacheKey(email), json, options);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> VerifyOtpAsync(string email, string otp)
-        {
-            var json = await _cache.GetStringAsync(GetOtpCacheKey(email));
-            if (string.IsNullOrEmpty(json)) return false;
-
-            var otpInfo = JsonSerializer.Deserialize<OtpInfo>(json);
-            return otpInfo != null && otpInfo.Code == otp;
-        }
-
-        public async Task InvalidateOtpAsync(string email)
-        {
-            await _cache.RemoveAsync(GetOtpCacheKey(email));
-        }
-
-        public async Task<OtpInfo?> GetCurrentOtpAsync(string email)
-        {
-            var json = await _cache.GetStringAsync(GetOtpCacheKey(email));
-            if (string.IsNullOrEmpty(json)) return null;
-
-            return JsonSerializer.Deserialize<OtpInfo>(json);
-        }
     }
 
 }

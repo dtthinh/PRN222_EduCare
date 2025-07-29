@@ -1,7 +1,8 @@
-using BOs.Models;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
+using System.Threading.Tasks;
 
 namespace PRN222.Pages.Credential
 {
@@ -15,9 +16,7 @@ namespace PRN222.Pages.Credential
         }
 
         [BindProperty]
-        public Account account { get; set; } = new();
-
-        public string ErrorMessage { get; set; } = string.Empty;
+        public LoginViewModel Input { get; set; }
 
         public void OnGet()
         {
@@ -25,33 +24,42 @@ namespace PRN222.Pages.Credential
 
         public async Task<IActionResult> OnPostAsync()
         {
-
-            var logedAccount = await _accountService.Login(account.Email, account.Password);
-
-            if (logedAccount != null)
+            ModelState.Clear();
+            if (!ModelState.IsValid)
             {
-                HttpContext.Session.SetInt32("UserId", logedAccount.AccountID);
+                return Page();
+            }
 
-                if (logedAccount.RoleID == 1)
+            var loggedInAccount = await _accountService.Login(Input.Email, Input.Password);
+
+            if (loggedInAccount != null)
+            {
+                if (loggedInAccount.Status != "Active")
                 {
-                    HttpContext.Session.SetString("Role", "Admin");
-                    return RedirectToPage("/Admin/Dashboards/DashBoard");    // Redirect to Admin Home Page
+                    ModelState.AddModelError(string.Empty, "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+                    return Page();
                 }
-                else if (logedAccount.RoleID == 2)
+
+                HttpContext.Session.SetInt32("UserId", loggedInAccount.AccountID);
+
+                switch (loggedInAccount.RoleID)
                 {
-                    HttpContext.Session.SetString("Role", "Nurse");
-                    return RedirectToPage("/Nurse/NurseHomePage");
-                }
-                else
-                {
-                    HttpContext.Session.SetString("Role", "Parent");
-                    HttpContext.Session.SetInt32("ParentId", logedAccount.AccountID);
-                    return RedirectToPage("/Index");   // Redirect to Parent Home Page
+                    case 1: // Admin
+                        HttpContext.Session.SetString("Role", "Admin");
+                        return RedirectToPage("/Admin/Dashboards/Dashboard");
+                    case 2: // Nurse
+                        HttpContext.Session.SetString("Role", "Nurse");
+                        return RedirectToPage("/Nurse/NurseHomePage");
+                    case 3: // Parent
+                        HttpContext.Session.SetString("Role", "Parent");
+                        return RedirectToPage("/Index");
+                    default:
+                        ModelState.AddModelError(string.Empty, "Vai trò không xác định.");
+                        return Page();
                 }
             }
 
-            ErrorMessage = "Invalid username or password.";
-            ModelState.AddModelError(string.Empty, ErrorMessage);
+            ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
             return Page();
         }
     }

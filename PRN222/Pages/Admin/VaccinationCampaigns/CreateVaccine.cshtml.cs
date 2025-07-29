@@ -14,27 +14,23 @@ public class CreateVaccineModel : PageModel
     }
 
     [BindProperty]
-    public Vaccine Vaccine { get; set; }
+    public Vaccine Vaccine { get; set; } = new();
 
-    public void OnGet() { }
+    public void OnGet()
+    {
+    }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        ModelState.Clear();
         if (!ModelState.IsValid)
         {
-            foreach (var key in ModelState.Keys)
-            {
-                var state = ModelState[key];
-                foreach (var error in state.Errors)
-                {
-                    Console.WriteLine($"❌ {key}: {error.ErrorMessage}");
-                }
-            }
-
             return Page();
         }
 
         await _vaccinationService.CreateVaccineAsync(Vaccine);
+
+        TempData["SuccessMessage"] = "Tạo vaccine mới thành công!";
         return RedirectToPage("Vaccines");
     }
 }

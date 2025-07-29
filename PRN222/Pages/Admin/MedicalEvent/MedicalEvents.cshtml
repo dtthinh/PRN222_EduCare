@@ -1,49 +1,57 @@
 ﻿@page
 @model MedicalEventsModel
 @{
-    ViewData["Title"] = "Quản lý lịch tiêm / khám";
+    ViewData["Title"] = "Quản lý lịch sử khám bệnh";
 }
 
-<h2>Lịch tiêm / khám</h2>
+<h2>@ViewData["Title"]</h2>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Loại</th>
-            <th>Ngày</th>
-            <th>Ghi chú</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.MedicalEvents)
-        {
-            <tr>
-                <td>@item.Type</td>
-                <td>@item.Date.ToShortDateString()</td>
-                <td>@item.Note</td>
-                <td>
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#details-@item.MedicalEventId">
-                        Xem chi tiết
-                    </button>
-                </td>
-            </tr>
-            <tr class="collapse" id="details-@item.MedicalEventId">
-                <td colspan="4">
-                    <div class="border rounded p-3">
-                        <strong>Học sinh:</strong><br />
-                        Họ tên: @item.Student.Fullname<br />
-                        Giới tính: @item.Student.Gender<br />
-                        Mã HS: @item.Student.StudentCode<br />
-                        Ngày sinh: @item.Student.DateOfBirth.ToShortDateString()<br /><br />
+<p>
+    <a asp-page="./Create" class="btn btn-success">
+        <i class="fas fa-plus"></i> Tạo Sự kiện Mới
+    </a>
+</p>
 
-                        <strong>Y tá phụ trách:</strong><br />
-                        Họ tên: @item.Nurse.Fullname<br />
-                        Email: @item.Nurse.Email<br />
-                        SĐT: @item.Nurse.PhoneNumber
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (Model.EventsByClass == null || !Model.EventsByClass.Any())
+{
+    <div class="alert alert-info">Không có sự kiện y tế nào để hiển thị.</div>
+}
+else
+{
+    foreach (var classGroup in Model.EventsByClass.OrderBy(c => c.Key.ClassName))
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Lớp: @classGroup.Key.ClassName</h4>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Học sinh</th>
+                            <th>Loại</th>
+                            <th>Ngày diễn ra</th>
+                            <th>Y tá phụ trách</th>
+                            <th style="width: 200px;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in classGroup.Value.OrderByDescending(e => e.Date))
+                        {
+                            <tr>
+                                <td>@item.Student?.Fullname</td>
+                                <td>@item.Type</td>
+                                <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Nurse?.Fullname</td>
+                                <td>
+                                    <a asp-page="./Details" asp-route-id="@item.MedicalEventId" class="btn btn-sm btn-info">Chi tiết</a>
+                                    <a asp-page="./Delete" asp-route-id="@item.MedicalEventId" class="btn btn-sm btn-danger">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

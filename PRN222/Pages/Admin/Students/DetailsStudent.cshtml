@@ -1,0 +1,43 @@
+﻿@page "{id:int}"
+@model DetailsStudentModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Chi Tiết Học Sinh";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">@ViewData["Title"]: @Model.Student.Fullname</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Mã học sinh</dt>
+                        <dd class="col-sm-9">@Model.Student.StudentCode</dd>
+
+                        <dt class="col-sm-3">Họ và tên</dt>
+                        <dd class="col-sm-9">@Model.Student.Fullname</dd>
+
+                        <dt class="col-sm-3">Lớp</dt>
+                        <dd class="col-sm-9">@Model.Student.Class?.ClassName</dd>
+
+                        <dt class="col-sm-3">Giới tính</dt>
+                        <dd class="col-sm-9">@Model.Student.Gender</dd>
+
+                        <dt class="col-sm-3">Ngày sinh</dt>
+                        <dd class="col-sm-9">@Model.Student.DateOfBirth.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-3">Phụ huynh</dt>
+                        <dd class="col-sm-9">@(Model.Student.Parent?.Fullname ?? "Chưa có phụ huynh")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-light text-end">
+                    <a asp-page="EditStudent" asp-route-id="@Model.Student.StudentId" class="btn btn-primary">Sửa</a>
+                    <a asp-page="Students" class="btn btn-secondary">Quay lại danh sách</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

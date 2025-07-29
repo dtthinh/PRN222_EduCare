@@ -1,0 +1,68 @@
+﻿@page "{id:int}"
+@model DetailsModel
+@{
+    ViewData["Title"] = "Chi tiết sự kiện";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Sự kiện Y tế</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Loại sự kiện</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedicalEvent.Type)</dd>
+        <dt class="col-sm-3">Ngày diễn ra</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Date.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-3">Mô tả</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedicalEvent.Description)</dd>
+        <dt class="col-sm-3">Ghi chú</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.MedicalEvent.Note)</dd>
+    </dl>
+
+    <hr />
+    <h4>Thông tin Học sinh</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Họ và tên</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Student?.Fullname</dd>
+        <dt class="col-sm-3">Lớp</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Student?.Class?.ClassName</dd>
+        <dt class="col-sm-3">Mã học sinh</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Student?.StudentCode</dd>
+    </dl>
+
+    <hr />
+    <h4>Y tá phụ trách</h4>
+    <dl class="row">
+        <dt class="col-sm-3">Họ và tên</dt>
+        <dd class="col-sm-9">@Model.MedicalEvent.Nurse?.Fullname</dd>
+    </dl>
+
+    @if (Model.MedicalEvent.MedicalEventMedications != null && Model.MedicalEvent.MedicalEventMedications.Any())
+    {
+        <hr />
+        <h4>Thuốc đã sử dụng</h4>
+        <ul>
+            @foreach (var med in Model.MedicalEvent.MedicalEventMedications)
+            {
+                <li>@med.Medication?.Name - Số lượng: @med.QuantityUsed</li>
+            }
+        </ul>
+    }
+
+    @if (Model.MedicalEvent.MedicalEventMedicalSupplies != null && Model.MedicalEvent.MedicalEventMedicalSupplies.Any())
+    {
+        <hr />
+        <h4>Vật tư đã sử dụng</h4>
+        <ul>
+            @foreach (var supply in Model.MedicalEvent.MedicalEventMedicalSupplies)
+            {
+                <li>@supply.MedicalSupply?.Name - Số lượng: @supply.QuantityUsed</li>
+            }
+        </ul>
+    }
+</div>
+<div class="mt-3">
+    <a asp-page="./Edit" asp-route-id="@Model.MedicalEvent.MedicalEventId" class="btn btn-primary">Sửa</a> |
+    <a asp-page="./MedicalEvents">Quay lại danh sách</a>
+</div>

@@ -1,0 +1,50 @@
+﻿@page
+@model PRN222.Pages.Nurse.Vaccination.VaccinationRecordModel
+@{
+    ViewData["Title"] = "Danh sách hồ sơ tiêm chủng";
+}
+
+<h2>Danh sách hồ sơ tiêm chủng</h2>
+
+@if (Model.Records != null && Model.Records.Count > 0)
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Mã hồ sơ</th>
+                <th>Chiến dịch</th>
+                <th>Học sinh</th>
+                <th>Y tá</th>
+                <th>Ngày tiêm</th>
+                <th>Kết quả</th>
+                <th>Phản ứng tức thì</th>
+                <th>Ghi chú</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var record in Model.Records)
+        {
+            <tr>
+                <td>@record.RecordId</td>
+                <td>@record.Campaign?.Name</td>
+                <td>@record.Student?.Fullname</td>
+                <td>@record.Nurse?.Fullname</td>
+                <td>@record.DateInjected.ToString("dd/MM/yyyy")</td>
+                <td>@record.Result</td>
+                <td>@record.ImmediateReaction</td>
+                <td>@record.Note</td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="/Nurse/VaccinationFollowUp/FollowUp?recordId=@record.RecordId">Xem theo dõi</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">Không tìm thấy hồ sơ tiêm chủng nào.</div>
+}
+
+<a class="btn btn-primary mb-3" href="/Nurse/NurseHomePage">Trang chủ y tá</a>

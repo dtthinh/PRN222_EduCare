@@ -1,30 +1,30 @@
 ﻿@page
 @model PRN222.Pages.Nurse.Health_Check.CreateHealthCheckModel
 @{
-    ViewData["Title"] = "Create Health Check List";
+    ViewData["Title"] = "Tạo phiếu khám sức khỏe";
 }
 
-<h1>Create Health Check List</h1>
+<h1>Tạo phiếu khám sức khỏe</h1>
 
 <form method="post">
     <input type="hidden" asp-for="Input.NurseId" />
 
     <div class="form-group">
-        <label>Date</label>
+        <label>Ngày khám</label>
         <input asp-for="Input.Date" type="date" class="form-control" />
         <span asp-validation-for="Input.Date" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Health Check Description</label>
+        <label>Mô tả khám sức khỏe</label>
         <textarea asp-for="Input.HealthCheckDescription" class="form-control"></textarea>
         <span asp-validation-for="Input.HealthCheckDescription" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label>Selected Classes</label>
+        <label>Chọn lớp</label>
         <div id="selected-classes-box" class="border p-2 rounded mb-2" style="min-height: 40px;">
-            <span class="text-muted">No classes selected.</span>
+            <span class="text-muted">Chưa chọn lớp nào.</span>
         </div>
 
         <div style="max-height: 200px; overflow-y: auto;" class="border p-2 rounded">
@@ -45,8 +45,8 @@
         <span asp-validation-for="Input.ClassIds" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-page="HealthCheck" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Tạo</button>
+    <a asp-page="HealthCheck" class="btn btn-secondary">Hủy</a>
 </form>
 
 @section Scripts {
@@ -66,7 +66,7 @@
 
             selectedBox.innerHTML = selected.length > 0
                 ? selected.map(name => `<span class="badge bg-info text-dark me-1">${name}</span>`).join('')
-                : '<span class="text-muted">No classes selected.</span>';
+                : '<span class="text-muted">Chưa chọn lớp nào.</span>';
         }
 
         document.addEventListener("DOMContentLoaded", updateSelectedClasses);

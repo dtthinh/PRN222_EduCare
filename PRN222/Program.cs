@@ -14,11 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<DAOs.DashboardDAO>();
+
+
+
 // Repositories
 builder.Services.AddScoped<IAccountRepo, AccountRepo>();
 builder.Services.AddScoped<IStudentRepo, StudentRepo>();
-builder.Services.AddScoped<IBlogRepo, BlogRepo>();
-builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 builder.Services.AddScoped<IHealthRecordRepo, HealthRecordRepo>();
 builder.Services.AddScoped<IHealthCheckRepo, HealthCheckRepo>();
 builder.Services.AddScoped<IClassRepo, ClassRepo>();
@@ -27,7 +29,6 @@ builder.Services.AddScoped<IMedicationRepo, MedicationRepo>();
 builder.Services.AddScoped<IParentMedicationRequestRepo, ParentMedicationRequestRepo>();
 builder.Services.AddScoped<IMedicalSupplyRepo, MedicalSupplyRepo>();
 builder.Services.AddScoped<IVaccinationRepo, VaccinationRepo>();
-builder.Services.AddScoped<IHealthConsultationBookingRepo, HealthConsultationBookingRepo>();
 builder.Services.AddScoped<IDashboardRepo, DashboardRepo>();
 
 
@@ -37,8 +38,6 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
-builder.Services.AddScoped<IBlogService, BlogService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IHealthRecordService, HealthRecordService>();
 builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
 builder.Services.AddScoped<IClassService, ClassService>();
@@ -47,11 +46,8 @@ builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IParentMedicationRequestService, ParentMedicationRequestService>();
 builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
-builder.Services.AddScoped<IHealthConsultationBookingService, HealthConsultationBookingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-//DAO
-builder.Services.AddScoped<HealthConsultationBookingDAO>();
 
 // add Session
 builder.Services.AddSession(options =>

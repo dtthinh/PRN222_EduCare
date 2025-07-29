@@ -11,14 +11,17 @@ namespace Repos
 {
     public class AccountRepo : IAccountRepo
     {
-        public async Task<Account?> GetAccountByEmailAsync(string email)
+
+        public Task<Account?> GetAccountByEmailAsync(string email) => AccountDAO.Instance.GetAccountByEmailAsync(email);
+        public Task<Account> CreateAccountAsync(Account account) => AccountDAO.Instance.CreateAccountAsync(account);
+        public Task<List<Role>> GetAllRolesAsync()
         {
-            return await AccountDAO.Instance.GetAccountByEmailAsync(email);
+            return AccountDAO.Instance.GetAllRolesAsync();
         }
 
-        public async Task<Role?> GetRoleByIdAsync(int roleId)
+        public Task<Role?> GetRoleByIdAsync(int roleId)
         {
-            return await AccountDAO.Instance.GetRoleByIdAsync(roleId);
+            return AccountDAO.Instance.GetRoleByIdAsync(roleId);
         }
 
         public async Task<List<Account>> GetAllAccountsAsync()
@@ -29,11 +32,6 @@ namespace Repos
         public async Task<bool> DeleteAccountAsync(int accountId)
         {
             return await AccountDAO.Instance.DeleteAccountAsync(accountId);
-        }
-
-        public async Task<bool> SignUpAsync(Account account)
-        {
-            return await AccountDAO.Instance.SignUpAsync(account);
         }
 
         public async Task<bool> UpdateAccountAsync(Account account)

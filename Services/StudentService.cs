@@ -1,4 +1,5 @@
 ﻿using BOs.Models;
+using DAOs;
 using Repos;
 using System;
 using System.Collections.Generic;
@@ -20,23 +21,6 @@ namespace Services
         public async Task<Student?> GetStudentByCodeAsync(string studentCode)
         {
             return await _studentRepo.GetStudentByCodeAsync(studentCode);
-        }
-
-        public async Task<bool> LinkStudentToParentAsync(string studentCode, int parentId)
-        {
-            var linked = await _studentRepo.AssignParentToStudentAsync(studentCode, parentId);
-            if (linked)
-            {
-                // Get the student to retrieve their ID
-                var student = await _studentRepo.GetStudentByCodeAsync(studentCode);
-                if (student != null)
-                {
-                    // Update all future health checks to include the new parent
-                    var healthCheckService = new HealthCheckService();
-                    await healthCheckService.UpdateParentForFutureHealthChecksAsync(student.StudentId, parentId);
-                }
-            }
-            return linked;
         }
 
         public async Task<Student> CreateStudentAsync(Student student)
@@ -78,5 +62,16 @@ namespace Services
         {
             return await _studentRepo.GetStudentsByClassIdsAsync(classIds);
         }
+        public async Task<List<Student>> GetStudentsWithoutParentsByClassIdAsync(int classId)
+        {
+            return await _studentRepo.GetStudentsWithoutParentsByClassIdAsync(classId);
+        }
+
+        public async Task UpdateParentForStudentAsync(int studentId, int parentId)
+        {
+            await _studentRepo.UpdateParentForStudentAsync(studentId, parentId);
+        }
+
+        public Task RemoveParentFromStudentAsync(int studentId) => _studentRepo.RemoveParentFromStudentAsync(studentId);
     }
 }
